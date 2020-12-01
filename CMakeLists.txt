@@ -1,0 +1,55 @@
+cmake_minimum_required(VERSION 3.1)
+
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
+
+project( spectrograms./ )
+
+add_compile_options( -Wall -Wextra -pedantic )
+
+file( GLOB TARGET_SRC "./src/*.cpp" )
+
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin )
+set( CMAKE_EXPORT_COMPILE_COMMANDS )
+
+# headers
+include_directories( ${CMAKE_HOME_DIRECTORY}/include )
+
+add_executable( spectrograms ${TARGET_SRC} )
+
+list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)
+find_package( LIBAV REQUIRED )
+find_package( FFTW REQUIRED )
+find_package( OpenCV REQUIRED )
+find_package( Boost COMPONENTS unit_test_framework REQUIRED)
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+include_directories( ${LIBAV_INCLUDE_DIRS} )
+include_directories( ${FFTW_INCLUDE_DIRS} )
+
+target_link_libraries( spectrograms fftw3 ${FFTW_LIBS} ${LIBAV_LIBS} ${OpenCV_LIBS} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} )
+
+# generating documentation
+
+set(BUILD_DOCS) #set TRUE if you want to build docs
+
+if(BUILD_DOCS)
+    find_package(Doxygen)
+    option(BUILD_DOCUMENTATION "Create and install the HTML based API        
+    documentation (requires Doxygen)" ${DOXYGEN_FOUND})
+
+    if(NOT DOXYGEN_FOUND)
+         message(FATAL_ERROR "Doxygen is needed to build the documentation.")
+    endif()
+
+    set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/docs/spectrograms.doxygen)
+    set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+
+    configure_file(${doxyfile_in} ${doxyfile} @ONLY)
+
+    message("Doxygen build started.")
+
+    add_custom_target(docs
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile_in}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
+                      COMMENT "Generating API documentation with Doxygen"
+                      VERBATIM)
+endif()
