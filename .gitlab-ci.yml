@@ -1,0 +1,31 @@
+image: ubuntu:latest
+
+before_script:
+  - apt-get update --yes > /dev/null
+  - DEBIAN_FRONTEND=noninteractive apt-get -y install cmake gcc g++ libavcodec-dev doxygen libboost-all-dev python3-opencv > /dev/null
+
+stages:
+  - build
+  #- test
+
+build:
+  stage: build
+  script: echo "Building the app"
+script:
+- sh ./build.sh
+
+# test:
+#   stage: test
+#   script: echo "Running tests"
+# script:
+# - sh ./tests.sh
+
+#  - mv ./ <folderName> /html/ public
+
+#pages:
+#  script:
+#artifacts:
+# paths: 
+#  - public  
+#  only:
+#  - master
