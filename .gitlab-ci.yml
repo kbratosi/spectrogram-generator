@@ -21,9 +21,10 @@ build:
 
 #  - mv ./ <folderName> /html/ public
 
-docum:
+documentation:
   stage: documentation
-  - sh ./build.sh -DBUILD_DOCS=TRUE 
+  script:
+    - sh ./build.sh -DBUILD_DOCS=TRUE 
     - cd ./build
     - make docs
     - cd ..
