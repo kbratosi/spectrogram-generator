@@ -6,7 +6,7 @@ before_script:
 
 stages:
   - build
-  #- test
+  - documentation
 
 build:
   stage: build
@@ -21,10 +21,16 @@ build:
 
 #  - mv ./ <folderName> /html/ public
 
-#pages:
-#  script:
-#artifacts:
-# paths: 
-#  - public  
-#  only:
-#  - master
+docum:
+  stage: documentation
+  - sh ./build.sh -DBUILD_DOCS=TRUE 
+    - cd ./build
+    - make docs
+    - cd ..
+    - mv ./docs/html/ public
+  artifacts:
+    paths:
+    - public
+  only:
+    - master
+
