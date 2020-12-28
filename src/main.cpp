@@ -1,3 +1,5 @@
+#include "SpectrogramGenerator.hpp"
+
 #include <iostream>
 
 #include <libavcodec/avcodec.h>
@@ -7,4 +9,15 @@
 
 int main() {
     std::cout << "Hello world!" << std::endl;
+    // Spooky scary skeleton!
+    // *GUI
+    // get input
+    // validate parameters
+    SpectrogramGenerator generator;
+    
+    // generator.openFile();
+    // generator.decodeFile();  // output: float/double
+
+    // generator.transform(*start, size/ *end);
+    // generator.createImage(*out_start);
 }
