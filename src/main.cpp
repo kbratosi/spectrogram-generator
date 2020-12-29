@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include <libavcodec/avcodec.h>
 #include <fftw3.h>
 #include <opencv2/opencv.hpp>
 #include <boost/test/unit_test.hpp>
@@ -12,8 +11,10 @@ int main() {
     // Spooky scary skeleton!
     // *GUI
     // get input
+    int sample_rate = 44100;
     // validate parameters
-    SpectrogramGenerator generator;
+
+    SpectrogramGenerator generator(sample_rate);
     
     // generator.openFile();
     // generator.decodeFile();  // output: float/double
