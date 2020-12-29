@@ -1,10 +1,15 @@
 #ifndef SPECTROGRAMGENERATOR_HPP
 #define SPECTROGRAMGENERATOR_HPP
 
-#include <libavutil/opt.h>
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libswresample/swresample.h>
+#ifdef __cplusplus
+extern "C"
+{
+  #include <libavutil/opt.h>
+  #include <libavcodec/avcodec.h>
+  #include <libavformat/avformat.h>
+  #include <libswresample/swresample.h>
+}
+#endif
 
 typedef class SpectrogramGenerator {
   /* parameters */

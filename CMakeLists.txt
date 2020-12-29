@@ -14,18 +14,31 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS )
 # headers
 include_directories( ${CMAKE_HOME_DIRECTORY}/include )
 
-add_executable( spectrograms ${TARGET_SRC} )
-
-list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)
-find_package( LIBAV REQUIRED )
+find_package( FFmpeg COMPONENTS avcodec avformat avutil swresample swscale REQUIRED )
 find_package( FFTW REQUIRED )
 find_package( OpenCV REQUIRED )
 find_package( Boost COMPONENTS unit_test_framework REQUIRED)
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-include_directories( ${LIBAV_INCLUDE_DIRS} )
-include_directories( ${FFTW_INCLUDE_DIRS} )
 
-target_link_libraries( spectrograms fftw3 ${FFTW_LIBS} ${LIBAV_LIBS} ${OpenCV_LIBS} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} )
+include_directories( 
+  ${OpenCV_INCLUDE_DIRS}
+  ${FFmpeg_INCLUDE_DIRS}
+  ${FFTW_INCLUDE_DIRS}
+  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+)
+
+add_executable( spectrograms ${TARGET_SRC} )
+
+target_link_libraries(
+  spectrograms
+  avcodec
+  avutil
+  avformat
+  swresample 
+  swscale
+  fftw3
+  ${OpenCV_LIBS}
+  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+)
 
 # generating documentation
 
