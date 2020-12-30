@@ -36,6 +36,10 @@ target_link_libraries(
   swresample 
   swscale
   fftw3
+<<<<<<< HEAD
+=======
+  fftw3f
+>>>>>>> origin
   ${OpenCV_LIBS}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
