@@ -16,20 +16,20 @@ int main() {
 
   // test for fftw3
   const int NUM_POINTS = 10;
-  fftw_complex signal[NUM_POINTS];
-  fftw_complex result[NUM_POINTS];
+  //fftw_complex signal[NUM_POINTS];
+  //fftw_complex result[NUM_POINTS];
 
-  fftw_plan plan = fftw_plan_dft_1d(NUM_POINTS,
-                                    signal,
-                                    result,
-                                    FFTW_FORWARD,
-                                    FFTW_ESTIMATE);
+  // fftw_plan plan = fftw_plan_dft_1d(NUM_POINTS,
+  //                                   signal,
+  //                                   result,
+  //                                   FFTW_FORWARD,
+  //                                   FFTW_ESTIMATE);
 
   SpectrogramGenerator generator(sample_rate);
   
   // generator.openFile();
-  // generator.decodeFile();  // output: float/double
-
+  generator.decodeAudioFile("audio/test_file.mp3");  // output: float/double
+  // std::cout << generator.data_ << std::endl;
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);
 }

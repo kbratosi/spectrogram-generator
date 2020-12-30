@@ -13,6 +13,7 @@ extern "C"
 
 typedef class SpectrogramGenerator {
   /* parameters */
+  public:
   double *data_;
   int data_size_;
   int sample_rate_;

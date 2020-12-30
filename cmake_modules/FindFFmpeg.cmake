@@ -1,4 +1,5 @@
-#
+# add credit to OBS!
+
 # This module defines the following variables:
 #
 #  FFMPEG_FOUND - All required components and the core library were found
