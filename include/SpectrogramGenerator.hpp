@@ -11,11 +11,13 @@ extern "C"
 }
 #endif
 
+typedef uint16_t sample_fmt;
+
 typedef class SpectrogramGenerator {
   /* parameters */
   public:
-  uint16_t *data_;
-  int data_size_;
+  sample_fmt *data_;
+  int data_size_; // n_samples * sizeof (BitDepth)
   int sample_rate_;
 
   public:

@@ -19,14 +19,14 @@ int main() {
   SpectrogramGenerator generator(sample_rate);
   
   // generator.openFile();
-  generator.decodeAudioFile("audio/test_file.mp3");  // output: float/double
+  generator.decodeAudioFile("audio/440hz.mp3");  // output: float/double
   std::ofstream decoded;
   decoded.open("test");
-  decoded.write((char *)generator.data_, generator.data_size_ * sizeof(double));
+  decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));
 
   std::cout << generator.data_size_ << std::endl;
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);
 
-  delete generator.data_;
+  free (generator.data_);
 }

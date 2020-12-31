@@ -1,5 +1,7 @@
 #include "SpectrogramGenerator.hpp"
 
+#include <iostream>
+
 SpecGen::SpectrogramGenerator(const int sample_rate) {
   data_ = nullptr;
   data_size_ = 0;
@@ -90,12 +92,14 @@ int SpecGen::decodeAudioFile(const char *file_name) {
     fprintf(stderr, "Resampler has not been properly initialized\n");
     return -1;
   }
-
+  int i = 0;
   while (av_read_frame(av_format_ctx, av_packet) >= 0) {
     // decode one frame
     int response;
+    ++i;
+    
+    // stream indexes do not match -> skip packet
     if (av_packet->stream_index != stream_index) {
-      fprintf(stderr, "Stream indexes do not match"); 
       av_packet_unref(av_packet);
       continue;
     }
@@ -120,13 +124,16 @@ int SpecGen::decodeAudioFile(const char *file_name) {
     av_samples_alloc(&buffer, NULL, 1, av_frame->nb_samples, AV_SAMPLE_FMT_S16, 0);
     int frame_count = swr_convert(swr, &buffer, av_frame->nb_samples, (const uint8_t**) av_frame->data, av_frame->nb_samples);
     // append resampled frames to data
-    data_ = (uint16_t*) realloc(data_, (data_size_ + av_frame->nb_samples) * sizeof(uint16_t));
-    memcpy(data_ + data_size_, buffer, frame_count * sizeof(uint16_t));
+    data_ = (sample_fmt*) realloc(data_, (data_size_ + av_frame->nb_samples) * sizeof(sample_fmt));
+    memcpy(data_ + data_size_, buffer, frame_count * sizeof(sample_fmt));
     data_size_ += frame_count;
+
+    av_freep(&buffer);
 
     av_packet_unref(av_packet);
   }
-
+  printf("i = %d\n", i);
+  std::cout << i << std::endl;
   // clean up
   swr_free(&swr);
   avformat_close_input(&av_format_ctx);
