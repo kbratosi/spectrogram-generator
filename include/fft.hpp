@@ -23,10 +23,11 @@ private:
     const uint FFT_INPUT_SAMPLES;
     const uint FFT_OUTPUT_SAMPLES;
 
-    float *g_InBuf, *g_WindowedBuf;
-    uint g_InBufPos;
-    fftwf_complex *g_OutBuf;
-    fftwf_plan g_Plan;
+    float *inBuf, *windowedBuf;
+    uint inBufPos;
+    fftwf_complex *outBuf;
+    std::vector<fftwf_complex *> specBuf;
+    fftwf_plan plan;
 };
 
 #endif
