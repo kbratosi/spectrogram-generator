@@ -13,13 +13,15 @@ int main() {
   // Spooky scary skeleton!
   // *GUI
   // get input
-  int sample_rate = 44100;
+  int out_sample_rate = 44100;
   // validate parameters
 
-  SpectrogramGenerator generator(sample_rate);
+  SpectrogramGenerator generator(out_sample_rate);
   
   // generator.openFile();
   generator.decodeAudioFile("audio/440hz.mp3");  // output: float/double
+  
+  // temporary - delete later
   std::ofstream decoded;
   decoded.open("test");
   decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));

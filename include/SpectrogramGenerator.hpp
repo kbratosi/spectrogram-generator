@@ -21,6 +21,9 @@ class Decoder {
   AVFrame *av_frame_;
   AVPacket *av_packet_;
 
+  int initFormatContext(const char *file_name);
+  int initCodecContext(const char *file_name);
+  int initSwrContext(const int out_sample_rate);
   public:
   Decoder();
   ~Decoder();
