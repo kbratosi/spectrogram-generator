@@ -1,3 +1,4 @@
 build/*
 bin/spectrograms
 .vscode/*
+test
