@@ -25,6 +25,8 @@ class Decoder {
   int initFormatContext(const char *file_name);
   int initCodecContext(const char *file_name);
   int initSwrContext(const int out_sample_rate);
+
+  const char* avMakeError(int errnum);
   
   public:
   Decoder();

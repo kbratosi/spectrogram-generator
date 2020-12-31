@@ -16,6 +16,7 @@ int main() {
   // validate parameters
 
   SpectrogramGenerator generator(out_sample_rate);
+  std::cout << "Decoder" << std::endl;
   if(generator.setupDecoder("audio/440hz.mp3") != 0)
     return -1;
   if(generator.decodeAudioFile() != 0)
@@ -27,7 +28,6 @@ int main() {
   decoded.write((char *)generator.data_, generator.data_size_);
   decoded.close();
 
-  std::cout << generator.data_size_ << std::endl;
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);
 }
