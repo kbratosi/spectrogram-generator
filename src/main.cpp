@@ -23,10 +23,9 @@ int main() {
   std::ofstream decoded;
   decoded.open("test");
   decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));
+  decoded.close();
 
   std::cout << generator.data_size_ << std::endl;
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);
-
-  free (generator.data_);
 }
