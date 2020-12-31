@@ -20,7 +20,7 @@ int SpecGen::decodeAudioFile(const char *file_name) {
   }
 
   if(avformat_find_stream_info(av_format_ctx, nullptr) < 0) {
-    fprintf(stderr, "Could not open file '%s'\n", file_name);
+    fprintf(stderr, "Could not retrieve stream information from '%s'\n", file_name);
     return -1;
   }
 
@@ -84,7 +84,7 @@ int SpecGen::decodeAudioFile(const char *file_name) {
   av_opt_set_int(swr, "in_sample_rate", av_codec_ctx->sample_rate, 0);
   av_opt_set_int(swr, "out_sample_rate", sample_rate_, 0);
   av_opt_set_sample_fmt(swr, "in_sample_fmt",  av_codec_ctx->sample_fmt, 0);
-  av_opt_set_sample_fmt(swr, "out_sample_fmt", AV_SAMPLE_FMT_DBL,  0);
+  av_opt_set_sample_fmt(swr, "out_sample_fmt", AV_SAMPLE_FMT_S16,  0);
   swr_init(swr);
   if (!swr_is_initialized(swr)) {
     fprintf(stderr, "Resampler has not been properly initialized\n");
@@ -115,21 +115,20 @@ int SpecGen::decodeAudioFile(const char *file_name) {
       return -1;
     }
 
-    // // resample frames
-    // double* buffer;
-    // av_samples_alloc((uint8_t**) &buffer, NULL, 1, frame->nb_samples, AV_SAMPLE_FMT_DBL, 0);
-    // int frame_count = swr_convert(swr, (uint8_t**) &buffer, frame->nb_samples, (const uint8_t**) frame->data, frame->nb_samples);
-    // // append resampled frames to data
-    // data_ = (double*) realloc(data_, (data_size_ + frame->nb_samples) * sizeof(double));
-    // memcpy(data_ + data_size_, buffer, frame_count * sizeof(double));
-    // data_size_ += frame_count;
+    // resample frames
+    uint8_t* buffer;
+    av_samples_alloc(&buffer, NULL, 1, av_frame->nb_samples, AV_SAMPLE_FMT_S16, 0);
+    int frame_count = swr_convert(swr, &buffer, av_frame->nb_samples, (const uint8_t**) av_frame->data, av_frame->nb_samples);
+    // append resampled frames to data
+    data_ = (uint16_t*) realloc(data_, (data_size_ + av_frame->nb_samples) * sizeof(uint16_t));
+    memcpy(data_ + data_size_, buffer, frame_count * sizeof(uint16_t));
+    data_size_ += frame_count;
 
     av_packet_unref(av_packet);
   }
 
   // clean up
-  //swr_free(&swr);
-
+  swr_free(&swr);
   avformat_close_input(&av_format_ctx);
   avformat_free_context(av_format_ctx);
   av_frame_free(&av_frame);

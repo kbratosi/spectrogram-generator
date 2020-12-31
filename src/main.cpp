@@ -6,6 +6,8 @@
 #include <opencv2/opencv.hpp>
 #include <boost/test/unit_test.hpp>
 
+#include <fstream>
+
 int main() {
   std::cout << "Hello world!" << std::endl;
   // Spooky scary skeleton!
@@ -18,7 +20,13 @@ int main() {
   
   // generator.openFile();
   generator.decodeAudioFile("audio/test_file.mp3");  // output: float/double
-  // std::cout << generator.data_ << std::endl;
+  std::ofstream decoded;
+  decoded.open("test");
+  decoded.write((char *)generator.data_, generator.data_size_ * sizeof(double));
+
+  std::cout << generator.data_size_ << std::endl;
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);
+
+  delete generator.data_;
 }
