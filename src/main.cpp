@@ -14,17 +14,6 @@ int main() {
   int sample_rate = 44100;
   // validate parameters
 
-  // test for fftw3
-  const int NUM_POINTS = 10;
-  //fftw_complex signal[NUM_POINTS];
-  //fftw_complex result[NUM_POINTS];
-
-  // fftw_plan plan = fftw_plan_dft_1d(NUM_POINTS,
-  //                                   signal,
-  //                                   result,
-  //                                   FFTW_FORWARD,
-  //                                   FFTW_ESTIMATE);
-
   SpectrogramGenerator generator(sample_rate);
   
   // generator.openFile();
