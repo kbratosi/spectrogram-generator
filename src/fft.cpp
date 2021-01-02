@@ -74,12 +74,12 @@ void Fft_samples::runFft()
     hanningWindow();
     fftwf_execute(plan);
 
+    float *tempBuf = new float[FFT_OUTPUT_SAMPLES];
+
     for (uint i = 0; i < FFT_OUTPUT_SAMPLES; ++i)
     {
-        outBuf[i][0] = sqrt(pow(outBuf[i][0], 2) + pow(outBuf[i][1], 2));
+        tempBuf[i] = 10 * log(pow(outBuf[i][0], 2) + pow(outBuf[i][1], 2)) / log(10); //max value - 96dB
     }
 
-    fftwf_complex *tempBuf = new fftwf_complex[FFT_OUTPUT_SAMPLES];
-    std::memcpy(tempBuf, outBuf, sizeof(fftwf_complex) * FFT_OUTPUT_SAMPLES);
     specBuf.push_back(tempBuf);
 }
