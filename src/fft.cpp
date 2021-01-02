@@ -23,8 +23,8 @@ Fft_samples::~Fft_samples()
 
 void Fft_samples::processSamples(const void *inputBuf, uint bytes)
 {
-    const uint8_t *bufBytes = (const uint8_t *)inputBuf;
-    uint samples = bytes / 2; //change this later on production | depends on size of one sample
+    const sample_fmt *bufBytes = (const sample_fmt *)inputBuf;
+    uint samples = bytes; //change this later on production | depends on size of one sample
     while (samples)
     {
         uint samplesToCopy = std::min(samples, FFT_INPUT_SAMPLES - inBufPos);
@@ -38,15 +38,15 @@ void Fft_samples::processSamples(const void *inputBuf, uint bytes)
         }
 
         samples -= samplesToCopy;
-        bufBytes += samplesToCopy * 2;
+        bufBytes += samplesToCopy * sizeof(sample_fmt);
     }
 }
 
-void Fft_samples::normalizeSamples(float *outSamples, const uint8_t *inPcmData, uint sampleCount)
+void Fft_samples::normalizeSamples(float *outSamples, const sample_fmt *inPcmData, uint sampleCount)
 {
-    for (uint i = 0; i < sampleCount; ++i, inPcmData += 2, ++outSamples)
+    for (uint i = 0; i < sampleCount; ++i, inPcmData += sizeof(sample_fmt), ++outSamples)
     {
-        short Sample = *(const short *)inPcmData;
+        short Sample = *(const short *)inPcmData; //ask yourself is it obligatory??? does it make sense?
         *outSamples = ((float)Sample) / 65536.f;
     }
 }

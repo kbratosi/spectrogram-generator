@@ -1,6 +1,8 @@
 #ifndef FFT_HPP
 #define FFT_HPP
 
+#include "Decoder.hpp"
+
 #include <vector>
 #include <complex>
 
@@ -15,9 +17,11 @@ public:
     ~Fft_samples();
 
     void processSamples(const void *inputBuf, uint bytes);
-    void normalizeSamples(float *outSamples, const uint8_t *inPcmData, uint sampleCount);
+    void normalizeSamples(float *outSamples, const sample_fmt *inPcmData, uint sampleCount);
     void hanningWindow();
     void runFft();
+
+    fftwf_complex *outBuf;
 
 private:
     const uint FFT_INPUT_SAMPLES;
@@ -25,7 +29,7 @@ private:
 
     float *inBuf, *windowedBuf;
     uint inBufPos;
-    fftwf_complex *outBuf;
+
     std::vector<fftwf_complex *> specBuf;
     fftwf_plan plan;
 };
