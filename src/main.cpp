@@ -19,7 +19,7 @@ int main()
 
   SpectrogramGenerator generator(out_sample_rate);
   std::cout << "Decoder" << std::endl;
-  if (generator.setupDecoder("audio/440hz.mp3") != 0)
+  if (generator.setupDecoder("audio/440hzShort.mp3") != 0)
     return -1;
   if (generator.decodeAudioFile() != 0)
     return -1;
@@ -30,11 +30,23 @@ int main()
   decoded.write((char *)generator.data_, generator.data_size_);
   decoded.close();
 
-  // Fft_samples transformation(4096);
-  // transformation.processSamples(generator.data_, generator.data_size_);
+  std::cout << generator.data_size_ << std::endl;
 
-  // for (int i = 0; i < transformation.outBuf.size(); ++i)
+  Fft_samples transformation(4096);
+  transformation.processSamples(generator.data_, generator.data_size_);
+
+  // std::ofstream firer;
+  // firer.open("wyniki");
+  // firer.write((char*) *outBuf[i][0],
+
+  //   for (int i = 0; i < transformation.specBuf.size(); ++i)
   // {
+  //   std::cout << std::endl
+  //             << "new frame " << i << std::endl;
+  //   for (int j = 0; j < 4096 / 2 + 1; ++j)
+  //   {
+  //     std::cout << *transformation.specBuf[i][0] << std::endl;
+  //   }
   // }
 
   // generator.transform(*start, size/ *end);

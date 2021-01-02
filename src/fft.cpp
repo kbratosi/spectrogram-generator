@@ -1,5 +1,6 @@
 #include "fft.hpp"
 #include <cassert>
+#include <iostream>
 
 Fft_samples::Fft_samples(uint inputSamples) : FFT_INPUT_SAMPLES(inputSamples), FFT_OUTPUT_SAMPLES((inputSamples / 2) + 1)
 {
@@ -15,20 +16,27 @@ Fft_samples::Fft_samples(uint inputSamples) : FFT_INPUT_SAMPLES(inputSamples), F
 
 Fft_samples::~Fft_samples()
 {
-    free(inBuf);
-    free(windowedBuf);
-    free(outBuf);
+    delete[] inBuf;
+    delete[] windowedBuf;
+    delete[] outBuf;
+    for (int i = 0; i < specBuf.size(); ++i)
+    {
+        delete[] specBuf[i];
+    }
     fftwf_destroy_plan(plan);
+    fftw_cleanup();
 }
 
-void Fft_samples::processSamples(const void *inputBuf, uint bytes)
+void Fft_samples::processSamples(const sample_fmt *inputBuf, uint bytes)
 {
-    const sample_fmt *bufBytes = (const sample_fmt *)inputBuf;
+    const sample_fmt *bufBytes = inputBuf;
     uint samples = bytes; //change this later on production | depends on size of one sample
+    int iter = 0;
     while (samples)
     {
         uint samplesToCopy = std::min(samples, FFT_INPUT_SAMPLES - inBufPos);
-        normalizeSamples(inBuf + inBufPos, bufBytes, samplesToCopy);
+        std::cout << "Samples to copy: " << samplesToCopy << "iteration: " << ++iter << std::endl;
+        fillBuffer(inBuf + inBufPos, bufBytes, samplesToCopy);
         inBufPos += samplesToCopy;
         if (inBufPos == FFT_INPUT_SAMPLES)
         {
@@ -38,17 +46,17 @@ void Fft_samples::processSamples(const void *inputBuf, uint bytes)
         }
 
         samples -= samplesToCopy;
-        bufBytes += samplesToCopy * sizeof(sample_fmt);
+        bufBytes += samplesToCopy;
     }
 }
 
-void Fft_samples::normalizeSamples(float *outSamples, const sample_fmt *inPcmData, uint sampleCount)
+void Fft_samples::fillBuffer(float *outSamples, const sample_fmt *inPcmData, uint sampleCount)
 {
-    for (uint i = 0; i < sampleCount; ++i, inPcmData += sizeof(sample_fmt), ++outSamples)
-    {
-        short Sample = *(const short *)inPcmData; //ask yourself is it obligatory??? does it make sense?
-        *outSamples = ((float)Sample) / 65536.f;
-    }
+    // for (uint i = 0; i < sampleCount; ++i, ++inPcmData, ++outSamples)
+    // {
+    //short Sample = *(const short *)inPcmData; //ask yourself is it obligatory??? does it make sense?
+    memcpy(outSamples, inPcmData, sizeof(sample_fmt) * sampleCount);
+    // }
 }
 
 void Fft_samples::hanningWindow()

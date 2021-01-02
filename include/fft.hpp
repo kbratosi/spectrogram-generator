@@ -16,21 +16,21 @@ public:
     Fft_samples(uint inputSamples);
     ~Fft_samples();
 
-    void processSamples(const void *inputBuf, uint bytes);
-    void normalizeSamples(float *outSamples, const sample_fmt *inPcmData, uint sampleCount);
+    void processSamples(const sample_fmt *inputBuf, uint bytes);
+    void fillBuffer(float *outSamples, const sample_fmt *inPcmData, uint sampleCount);
     void hanningWindow();
     void runFft();
 
-    fftwf_complex *outBuf;
+    std::vector<fftwf_complex *> specBuf;
 
 private:
     const uint FFT_INPUT_SAMPLES;
     const uint FFT_OUTPUT_SAMPLES;
 
     float *inBuf, *windowedBuf;
+    fftwf_complex *outBuf;
     uint inBufPos;
 
-    std::vector<fftwf_complex *> specBuf;
     fftwf_plan plan;
 };
 
