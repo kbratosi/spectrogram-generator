@@ -78,7 +78,9 @@ void Fft_samples::runFft()
 
     for (uint i = 0; i < FFT_OUTPUT_SAMPLES; ++i)
     {
-        tempBuf[i] = 10 * log(pow(outBuf[i][0], 2) + pow(outBuf[i][1], 2)) / log(10); //max value - 96dB
+        outBuf[i][0] *= (2. / FFT_INPUT_SAMPLES);
+        outBuf[i][1] *= (2. / FFT_INPUT_SAMPLES);
+        tempBuf[i] = 10. / log(10.) * log(pow(outBuf[i][0], 2) + pow(outBuf[i][1], 2) + 1e-6); //max value - 96dB
     }
 
     specBuf.push_back(tempBuf);

@@ -21,12 +21,14 @@ public:
     void hanningWindow();
     void runFft();
 
+    std::vector<float *> specBuf;
+
 private:
     const uint FFT_INPUT_SAMPLES;
     const uint FFT_OUTPUT_SAMPLES;
 
     float *inBuf, *windowedBuf;
-    std::vector<float *> specBuf;
+
     fftwf_complex *outBuf;
     uint inBufPos;
 

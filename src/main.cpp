@@ -14,7 +14,7 @@ int main()
   // Spooky scary skeleton!
   // *GUI
   // get input
-  int out_sample_rate = 44100;
+  int out_sample_rate = 48000;
   int inputSamples = 4096;
   // validate parameters
 
@@ -32,6 +32,20 @@ int main()
   decoded.close();
 
   generator.processSamples();
+
+  std::ofstream firer;
+  firer.open("wyniki.txt");
+
+  for (int i = 0; i < generator.transformation_->specBuf.size(); ++i)
+  {
+    //firer << std::endl << "new frame " << i << std::endl;
+    for (int j = 0; j < 256 / 2 + 1; ++j)
+    {
+      firer << (generator.transformation_->specBuf[i][j]) << std::endl;
+      // }
+    }
+  }
+  firer.close();
 
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);

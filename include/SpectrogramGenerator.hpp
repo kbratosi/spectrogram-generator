@@ -7,12 +7,14 @@
 typedef class SpectrogramGenerator
 {
   Decoder decoder_;
-  Fft_samples *transformation_;
+  //Fft_samples *transformation_;
 
 public:              // temporary - change later!
   sample_fmt *data_; // array containing raw audio data
   int data_size_;    // number of samples
   int sample_rate_;  // sampling frequency of decoded file
+
+  Fft_samples *transformation_;
 
 public:
   SpectrogramGenerator(const int sample_rate, const uint inputSamples);
