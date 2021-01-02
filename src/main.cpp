@@ -19,7 +19,7 @@ int main()
 
   SpectrogramGenerator generator(out_sample_rate);
   std::cout << "Decoder" << std::endl;
-  if (generator.setupDecoder("audio/440hzShort.mp3") != 0)
+  if (generator.setupDecoder("audio/test_file.mp3") != 0)
     return -1;
   if (generator.decodeAudioFile() != 0)
     return -1;
@@ -27,27 +27,27 @@ int main()
   // temporary - delete later!
   std::ofstream decoded;
   decoded.open("test");
-  decoded.write((char *)generator.data_, generator.data_size_);
+  decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));
   decoded.close();
 
-  std::cout << generator.data_size_ << std::endl;
+  std::cout << generator.data_size_ << " " << sizeof(fftw_complex) << std::endl;
 
   Fft_samples transformation(4096);
   transformation.processSamples(generator.data_, generator.data_size_);
 
   // std::ofstream firer;
-  // firer.open("wyniki");
-  // firer.write((char*) *outBuf[i][0],
+  // firer.open("wyniki.txt");
 
-  //   for (int i = 0; i < transformation.specBuf.size(); ++i)
+  // for (int i = 0; i < transformation.specBuf.size(); ++i)
   // {
-  //   std::cout << std::endl
-  //             << "new frame " << i << std::endl;
-  //   for (int j = 0; j < 4096 / 2 + 1; ++j)
+  //   //firer << std::endl << "new frame " << i << std::endl;
+  //   for (int j = 0; j < 256 / 2 + 1; ++j)
   //   {
-  //     std::cout << *transformation.specBuf[i][0] << std::endl;
+  //     firer << *transformation.specBuf[i][0]
+  //           << std::endl;
   //   }
   // }
+  // firer.close();
 
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);

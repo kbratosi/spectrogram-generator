@@ -27,18 +27,18 @@ Fft_samples::~Fft_samples()
     fftw_cleanup();
 }
 
-void Fft_samples::processSamples(const sample_fmt *inputBuf, uint bytes)
+void Fft_samples::processSamples(const sample_fmt *data, uint data_size)
 {
-    const sample_fmt *bufBytes = inputBuf;
-    uint samples = bytes; //change this later on production | depends on size of one sample
+    const sample_fmt *bufBytes = data;
+    uint samples = data_size;
     int iter = 0;
     while (samples)
     {
         uint samplesToCopy = std::min(samples, FFT_INPUT_SAMPLES - inBufPos);
-        std::cout << "Samples to copy: " << samplesToCopy << "iteration: " << ++iter << std::endl;
+        std::cout << "Samples to copy: " << samplesToCopy << " iteration: " << ++iter << std::endl;
         fillBuffer(inBuf + inBufPos, bufBytes, samplesToCopy);
         inBufPos += samplesToCopy;
-        if (inBufPos == FFT_INPUT_SAMPLES)
+        if (inBufPos == FFT_INPUT_SAMPLES) //fill rest of samples with 0 to calculate FFT
         {
             runFft();
             memcpy(inBuf, inBuf + FFT_INPUT_SAMPLES / 2, sizeof(float) * FFT_INPUT_SAMPLES / 2);
@@ -64,7 +64,8 @@ void Fft_samples::hanningWindow()
     for (uint i = 0; i < FFT_INPUT_SAMPLES; ++i)
     {
         windowedBuf[i] = inBuf[i];
-        windowedBuf[i] *= 0.54f - 0.46f * cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1));
+        // windowedBuf[i] *= 0.54f - 0.46f * cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1));
+        windowedBuf[i] *= 0.5f * (1 - cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1)));
     }
 }
 
