@@ -13,10 +13,10 @@
 class Fft_samples
 {
 public:
-    Fft_samples(uint inputSamples);
+    Fft_samples(const uint inputSamples);
     ~Fft_samples();
 
-    void processSamples(const sample_fmt *inputBuf, uint bytes);
+    void processSamples(const sample_fmt *data, uint data_size);
     void fillBuffer(float *outSamples, const sample_fmt *inPcmData, uint sampleCount);
     void hanningWindow();
     void runFft();

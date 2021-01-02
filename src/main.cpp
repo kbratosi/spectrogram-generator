@@ -15,9 +15,10 @@ int main()
   // *GUI
   // get input
   int out_sample_rate = 44100;
+  int inputSamples = 4096;
   // validate parameters
 
-  SpectrogramGenerator generator(out_sample_rate);
+  SpectrogramGenerator generator(out_sample_rate, inputSamples);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/440hzShort.mp3") != 0)
     return -1;
@@ -30,27 +31,7 @@ int main()
   decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));
   decoded.close();
 
-  std::cout << generator.data_size_ << " " << sizeof(fftw_complex) << std::endl;
-
-  Fft_samples transformation(4096);
-  transformation.processSamples(generator.data_, generator.data_size_);
-
-  std::ofstream firer;
-  firer.open("wyniki.txt");
-
-  // for (int i = 0; i < transformation.specBuf.size(); ++i)
-  // {
-  //   //firer << std::endl << "new frame " << i << std::endl;
-  //   for (int j = 0; j < 512 / 2 + 1; ++j)
-  //   {
-  //     firer << *(transformation.specBuf[i] + j)[0] << std::endl;
-  //   // }
-  // }
-  for (int j = 0; j < 4096 / 2 + 1; ++j)
-  {
-    firer << *(transformation.specBuf[64] + j)[0] << std::endl;
-  }
-  firer.close();
+  generator.processSamples();
 
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);

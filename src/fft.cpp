@@ -2,7 +2,7 @@
 #include <cassert>
 #include <iostream>
 
-Fft_samples::Fft_samples(uint inputSamples) : FFT_INPUT_SAMPLES(inputSamples), FFT_OUTPUT_SAMPLES((inputSamples / 2) + 1)
+Fft_samples::Fft_samples(const uint inputSamples) : FFT_INPUT_SAMPLES(inputSamples), FFT_OUTPUT_SAMPLES((inputSamples / 2) + 1)
 {
     inBuf = new float[FFT_INPUT_SAMPLES];
     windowedBuf = new float[FFT_INPUT_SAMPLES];

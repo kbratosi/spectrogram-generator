@@ -2,10 +2,12 @@
 #define SPECTROGRAMGENERATOR_HPP
 
 #include "Decoder.hpp"
+#include "fft.hpp"
 
 typedef class SpectrogramGenerator
 {
   Decoder decoder_;
+  Fft_samples *transformation_;
 
 public:              // temporary - change later!
   sample_fmt *data_; // array containing raw audio data
@@ -13,10 +15,13 @@ public:              // temporary - change later!
   int sample_rate_;  // sampling frequency of decoded file
 
 public:
-  SpectrogramGenerator(const int sample_rate);
+  SpectrogramGenerator(const int sample_rate, const uint inputSamples);
   ~SpectrogramGenerator();
   int setupDecoder(const char *file_name);
   int decodeAudioFile();
+
+  void processSamples();
+
   //~
 } SpecGen;
 
