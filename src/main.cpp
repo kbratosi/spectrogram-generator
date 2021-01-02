@@ -6,6 +6,7 @@
 
 #include <fftw3.h>
 #include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <boost/test/unit_test.hpp>
 
 int main()
@@ -20,7 +21,7 @@ int main()
 
   SpectrogramGenerator generator(out_sample_rate, inputSamples);
   std::cout << "Decoder" << std::endl;
-  if (generator.setupDecoder("audio/440hzShort.mp3") != 0)
+  if (generator.setupDecoder("audio/surprise.mp3") != 0)
     return -1;
   if (generator.decodeAudioFile() != 0)
     return -1;
@@ -46,6 +47,41 @@ int main()
     }
   }
   firer.close();
+
+  //drawing spectrogram
+  cv::Mat img(1024, 1000, CV_16UC1, cv::Scalar(0));
+  if (img.empty())
+  {
+    std::cout << "\n Error - image not created \n";
+    return -1;
+  }
+
+  const int length = 1;
+  std::vector<cv::Point> tempVec;
+
+  for (int i = 0; i < 1000; ++i)
+  {
+
+    for (int j = 0; j < 1024; ++j)
+    {
+      cv::Point p3(length * i, 1 * j);
+      cv::Point p4(length * i + length, 1 * j);
+      cv::Scalar colorIn((generator.transformation_->specBuf[i][j] / 60 + 1) * 65536);
+      cv::line(img, p3, p4, colorIn, 4);
+    }
+  }
+
+  cv::Point p1(0, 50);
+  cv::Point p2(8, 50);
+  cv::Scalar color(-10000);
+  cv::line(img, p1, p2, color, 2);
+
+  cv::namedWindow("Spectrogram", cv::WINDOW_AUTOSIZE);
+  cv::imshow("Spectrogram", img);
+
+  cv::waitKey(0);
+
+  cv::destroyWindow("Spectrogram");
 
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);
