@@ -35,6 +35,7 @@ int main()
 
   generator.processSamples();
 
+  //write outputData from FFT to file
   std::ofstream firer;
   firer.open("wyniki.txt");
 
@@ -49,9 +50,9 @@ int main()
   }
   firer.close();
 
-  SpecImage picture(1024, 1000, 4096, 500);
+  SpecImage picture(1025, 500, 4096, 500);
   if (picture.createImage(generator.transformation_->specBuf))
-    std::cout << "save image \n";
+    std::cout << "\nImage created\n";
 
   //drawing spectrogram
   // cv::Mat img(1024, 1000, CV_16UC1, cv::Scalar(0));
@@ -75,11 +76,6 @@ int main()
   //     cv::line(img, p3, p3, colorIn, 4);
   //   }
   // }
-
-  // cv::Point p1(0, 50);
-  // cv::Point p2(8, 50);
-  // cv::Scalar color(-10000);
-  // cv::line(img, p1, p2, color, 2);
 
   // cv::namedWindow("Spectrogram", cv::WINDOW_AUTOSIZE);
   // cv::imshow("Spectrogram", img);

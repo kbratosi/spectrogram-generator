@@ -8,7 +8,7 @@ class SpecImage
 {
 public:
     SpecImage(int height, int width, int inputSam, int numOfCol);
-    // ~specImgae();
+    ~SpecImage();
     bool saveImage(std::string value);
     int createImage(std::vector<float *> data);
 
