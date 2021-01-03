@@ -1,5 +1,6 @@
 #include "SpectrogramGenerator.hpp"
 #include "fft.hpp"
+#include "drawImg.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -37,7 +38,7 @@ int main()
   std::ofstream firer;
   firer.open("wyniki.txt");
 
-  for (int i = 0; i < generator.transformation_->specBuf.size(); ++i)
+  for (uint i = 0; i < generator.transformation_->specBuf.size(); ++i)
   {
     //firer << std::endl << "new frame " << i << std::endl;
     for (int j = 0; j < 256 / 2 + 1; ++j)
@@ -48,40 +49,44 @@ int main()
   }
   firer.close();
 
+  SpecImage picture(1024, 1000, 4096, 500);
+  if (picture.createImage(generator.transformation_->specBuf))
+    std::cout << "save image \n";
+
   //drawing spectrogram
-  cv::Mat img(1024, 1000, CV_16UC1, cv::Scalar(0));
-  if (img.empty())
-  {
-    std::cout << "\n Error - image not created \n";
-    return -1;
-  }
+  // cv::Mat img(1024, 1000, CV_16UC1, cv::Scalar(0));
+  // if (img.empty())
+  // {
+  //   std::cout << "\n Error - image not created \n";
+  //   return -1;
+  // }
 
-  const int length = 1;
-  std::vector<cv::Point> tempVec;
+  // const int length = 1;
+  // std::vector<cv::Point> tempVec;
 
-  for (int i = 0; i < 1000; ++i)
-  {
+  // for (int i = 0; i < 1000; ++i)
+  // {
 
-    for (int j = 0; j < 1024; ++j)
-    {
-      cv::Point p3(length * i, 1 * j);
-      cv::Point p4(length * i + length, 1 * j);
-      cv::Scalar colorIn((generator.transformation_->specBuf[i][j] / 60 + 1) * 65536);
-      cv::line(img, p3, p4, colorIn, 4);
-    }
-  }
+  //   for (int j = 0; j < 1024; ++j)
+  //   {
+  //     cv::Point p3(length * i, 1 * j);
+  //     //cv::Point p4(length * i + length, 1 * j);
+  //     cv::Scalar colorIn((generator.transformation_->specBuf[i][j] / 60 + 1) * 65536);
+  //     cv::line(img, p3, p3, colorIn, 4);
+  //   }
+  // }
 
-  cv::Point p1(0, 50);
-  cv::Point p2(8, 50);
-  cv::Scalar color(-10000);
-  cv::line(img, p1, p2, color, 2);
+  // cv::Point p1(0, 50);
+  // cv::Point p2(8, 50);
+  // cv::Scalar color(-10000);
+  // cv::line(img, p1, p2, color, 2);
 
-  cv::namedWindow("Spectrogram", cv::WINDOW_AUTOSIZE);
-  cv::imshow("Spectrogram", img);
+  // cv::namedWindow("Spectrogram", cv::WINDOW_AUTOSIZE);
+  // cv::imshow("Spectrogram", img);
 
-  cv::waitKey(0);
+  // cv::waitKey(0);
 
-  cv::destroyWindow("Spectrogram");
+  // cv::destroyWindow("Spectrogram");
 
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);
