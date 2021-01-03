@@ -8,6 +8,8 @@
 #include <opencv2/opencv.hpp>
 #include <boost/test/unit_test.hpp>
 
+#include <boost/python.hpp>
+
 int main()
 {
   std::cout << "Hello world!" << std::endl;
