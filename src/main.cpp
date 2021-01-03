@@ -10,13 +10,29 @@
 
 #include <boost/python.hpp>
 
+extern "C" PyObject *PyInit_config();
+
 int main()
 {
   std::cout << "Hello world!" << std::endl;
+  int out_sample_rate = -1;
   // Spooky scary skeleton!
   // *GUI
   // get input
-  int out_sample_rate = 48000;
+
+  // Initialize Python
+  setenv("PYTHONPATH", ".", 1);
+  Py_Initialize();
+  boost::python::object config_module = boost::python::import("config");
+  boost::python::object config_namespace = config_module.attr("__dict__");
+  try {
+    out_sample_rate = boost::python::extract<int>(config_namespace["out_sample_rate"]);
+  }
+  catch(boost::python::error_already_set const &) {
+    PyErr_Print();
+  }
+  //
+  std::cout << out_sample_rate << std::endl;
   int inputSamples = 4096;
   // validate parameters
   
