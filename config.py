@@ -2,7 +2,7 @@
 out_sample_rate = 44100
 
 # Fourier's Transform input packet size (vertical axis)
-fft_input_size = 4096
+fft_input_time_window = 25.0
 
 # spectrogram overlapping
 fft_overlapping = 0.5

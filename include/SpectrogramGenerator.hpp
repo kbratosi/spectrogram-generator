@@ -25,8 +25,6 @@ public:
 
   void processSamples();
   void plotSpectrogram();
-
-  //~
 } SpecGen;
 
 #endif

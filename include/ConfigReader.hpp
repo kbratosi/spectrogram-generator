@@ -11,9 +11,9 @@ struct GeneratorConfiguration {
   uint out_sample_rate,
        img_width,
        img_height,
-       fft_input_size,
        fft_per_img;
-  float fft_overlapping;
+  float fft_overlapping,
+        fft_input_time_window;
   //
   void read();
 };

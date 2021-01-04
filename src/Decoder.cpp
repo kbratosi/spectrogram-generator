@@ -58,6 +58,12 @@ int Decoder::setup(const char *file_name, const int out_sample_rate)
 
 int Decoder::readFile(sample_fmt **data, int *data_size)
 {
+  //*data_size += ALLOCATION_UNIT;
+  //*data = (sample_fmt *)malloc(*data_size);
+  
+  sample_fmt *curr_tail = *data;
+  int frame_count = 0;
+  int i = 1;
   while (av_read_frame(av_format_ctx_, av_packet_) >= 0)
   {
     int response;
@@ -92,17 +98,20 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
 
     // resample frames
     uint8_t *buffer;
-    av_samples_alloc(&buffer, nullptr, 1, av_frame_->nb_samples, AV_SAMPLE_FMT_FLT, 0);
-    int frame_count = swr_convert(swr_, &buffer, av_frame_->nb_samples, (const uint8_t **)av_frame_->data, av_frame_->nb_samples);
+    av_samples_alloc(&buffer, nullptr, MONO, av_frame_->nb_samples, AV_SAMPLE_FMT_FLT, 0);
+    frame_count += swr_convert(swr_, &buffer, av_frame_->nb_samples, (const uint8_t **)av_frame_->data, av_frame_->nb_samples);
     // append resampled frames to data
     *data = (sample_fmt *)realloc(*data, (*data_size + av_frame_->nb_samples) * sizeof(sample_fmt));
     memcpy(*data + *data_size, buffer, frame_count * sizeof(sample_fmt));
     *data_size += frame_count;
 
+    ++i;
     // clean up
     av_freep(&buffer);
     av_packet_unref(av_packet_);
   }
+  std::cout << "Loops: " << i << std::endl
+            << "Memory allocated: " << *data_size * sizeof(sample_fmt) << std::endl;
   return 0;
 }
 

@@ -5,11 +5,11 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg) {
   data_size_ = 0;
 
   out_sample_rate_ = cfg->out_sample_rate;
-  transformation_ = new Fft_samples(cfg->fft_input_size);
+  transformation_ = new Fft_samples(cfg->fft_input_time_window);
   picture_ = new SpecImage(cfg->img_height,
                            cfg->img_width,
-                           cfg->fft_input_size,
-                           cfg->fft_per_img    );
+                           cfg->fft_input_time_window,
+                           cfg->fft_per_img           );
 }
 
 
