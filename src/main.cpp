@@ -13,8 +13,6 @@
 
 #include <boost/python.hpp>
 
-// namespace bp = boost::python;
-
 int main()
 {
   std::cout << "Hello world!" << std::endl;
@@ -32,17 +30,11 @@ int main()
     return -1;
   }
 
-  std::cout << "Read parameters:"
-            << "\nout_sample_rate: " << config.out_sample_rate
-            << "\nimg_width:       " << config.img_width
-            << "\nimg_height:      " << config.img_height
-            << "\nfft_input_size:  " << config.fft_input_size
-            << "\nfft_overlapping: " << config.fft_overlapping 
-            << std::endl;
-  
+  std::cout << config;
+
   int numOfCol = 500;
   // validate parameters
-
+  /*
   SpectrogramGenerator generator(config.out_sample_rate, config.fft_input_size, config.img_height, config.img_width, numOfCol);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/test20.mp3") != 0)
@@ -74,7 +66,7 @@ int main()
   firer.close();
 
   generator.plotSpectrogram();
-
+  */
   //SpecImage picture(1025, 500, 4096, 500);
   // if (picture.createImage(generator.transformation_->specBuf))
   //   std::cout << "\nImage created\n";

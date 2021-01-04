@@ -1,6 +1,8 @@
 #ifndef CONFIGREADER_HPP
 #define CONFIGREADER_HPP
 
+#include <iostream>
+
 #include <boost/python.hpp>
 
 namespace bp = boost::python;
@@ -15,5 +17,6 @@ struct GeneratorConfiguration {
   void readConfig();
 };
 
+std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg);
 
 #endif

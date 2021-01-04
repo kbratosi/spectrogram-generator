@@ -17,3 +17,13 @@ void GeneratorConfiguration::readConfig() {
     throw;
   }
 }
+
+std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg) {
+  return os << "Generation parameters:"
+            << "\nout_sample_rate: " << cfg.out_sample_rate
+            << "\nimg_width:       " << cfg.img_width
+            << "\nimg_height:      " << cfg.img_height
+            << "\nfft_input_size:  " << cfg.fft_input_size
+            << "\nfft_overlapping: " << cfg.fft_overlapping 
+            << std::endl;
+}
