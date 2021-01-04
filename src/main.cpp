@@ -9,48 +9,48 @@
 #include <boost/test/unit_test.hpp>
 
 #include <boost/python.hpp>
-#include <limits>
 
 namespace bp = boost::python;
 
 int main()
 {
   std::cout << "Hello world!" << std::endl;
-  uint out_sample_rate = 0,
-       img_width = 0,
-       img_height = 0,
-       fft_input_size = 0;
-  float fft_interlacing = 0;
   // Spooky scary skeleton!
   // *GUI
+  
   // get input
+  uint out_sample_rate,
+       img_width,
+       img_height,
+       fft_input_size;
+  float fft_overlapping;
 
   // initialize configuration script
   Py_Initialize();
-  bp::object config_module = bp::import("config");
-  bp::object config_namespace = config_module.attr("__dict__");
   try {
+    bp::object config_module = bp::import("config");
+    bp::object config_namespace = config_module.attr("__dict__");
+    //
     out_sample_rate = bp::extract<int  >(config_namespace["out_sample_rate"]);
     img_width       = bp::extract<int  >(config_namespace["img_width"      ]);
     img_height      = bp::extract<int  >(config_namespace["img_height"     ]);
     fft_input_size  = bp::extract<int  >(config_namespace["fft_input_size" ]);
-    fft_interlacing = bp::extract<float>(config_namespace["fft_interlacing"]);
+    fft_overlapping = bp::extract<float>(config_namespace["fft_overlapping"]);
   }
   catch(bp::error_already_set const &) {
     PyErr_Print();
     return -1;
   }
-  //
-  std::cout <<   "out_sample_rate: " << out_sample_rate
+  // 
+  std::cout << "Read parameters:"
+            << "\nout_sample_rate: " << out_sample_rate
             << "\nimg_width:       " << img_width
             << "\nimg_height:      " << img_height
             << "\nfft_input_size:  " << fft_input_size
-            << "\nfft_interlacing: " << fft_interlacing 
+            << "\nfft_overlapping: " << fft_overlapping 
             << std::endl;
-  int inputSamples = 4096;
-  // validate parameters
-  /* uncomment later!
-  SpectrogramGenerator generator(out_sample_rate, inputSamples);
+  
+  SpectrogramGenerator generator(out_sample_rate, fft_input_size);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/440hzShort.mp3") != 0)
     return -1;
@@ -81,5 +81,4 @@ int main()
 
   // generator.transform(*start, size/ *end);
   // generator.createImage(*out_start);
-  */
 }

@@ -4,8 +4,8 @@ out_sample_rate = 44100
 # Fourier's Transform input packet size
 fft_input_size = 4096
 
-# interlacing
-fft_interlacing = 0.5
+# spectrogram overlapping
+fft_overlapping = 0.5
 
 # output spectrogram image dimensions
 img_width = 1024
