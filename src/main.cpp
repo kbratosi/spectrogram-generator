@@ -52,14 +52,10 @@ int main()
             << "\nfft_overlapping: " << fft_overlapping 
             << std::endl;
   
-  int out_sample_rate = 48000;
-  int inputSamples = 4096;
-  int height = 1025;
-  int width = 500;
   int numOfCol = 500;
   // validate parameters
 
-  SpectrogramGenerator generator(out_sample_rate, inputSamples, height, width, numOfCol);
+  SpectrogramGenerator generator(out_sample_rate, fft_input_size, img_height, img_width, numOfCol);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/test20.mp3") != 0)
     return -1;
