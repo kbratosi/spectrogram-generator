@@ -62,7 +62,7 @@ int SpecImage::createImage(std::vector<float *> data)
 bool SpecImage::saveImage(std::string value)
 {
     cv::resize(*tempImage_, *image_, image_->size(), 0, 0, cv::INTER_CUBIC);
-    bool check = cv::imwrite("./bin/Spectrogram" + value + ".png", *image_);
+    bool check = cv::imwrite("./output/Spectrogram" + value + ".png", *image_);
 
     if (check)
         return true;
