@@ -1,11 +1,12 @@
 #include "SpectrogramGenerator.hpp"
 
-SpecGen::SpectrogramGenerator(const int sample_rate, const uint inputSamples)
+SpecGen::SpectrogramGenerator(const int sample_rate, const uint inputSamples, int height, int width, int numOfCol)
 {
   data_ = nullptr;
   data_size_ = 0;
   sample_rate_ = sample_rate;
   transformation_ = new Fft_samples(inputSamples);
+  picture_ = new SpecImage(height, width, inputSamples, numOfCol);
 }
 
 SpecGen::~SpectrogramGenerator()
@@ -38,4 +39,9 @@ int SpecGen::decodeAudioFile()
 void SpecGen::processSamples()
 {
   transformation_->processSamples(data_, data_size_);
+}
+
+void SpecGen::plotSpectrogram()
+{
+  picture_->createImage(transformation_->specBuf);
 }

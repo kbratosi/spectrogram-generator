@@ -18,9 +18,12 @@ int main()
   // get input
   int out_sample_rate = 48000;
   int inputSamples = 4096;
+  int height = 1025;
+  int width = 500;
+  int numOfCol = 500;
   // validate parameters
 
-  SpectrogramGenerator generator(out_sample_rate, inputSamples);
+  SpectrogramGenerator generator(out_sample_rate, inputSamples, height, width, numOfCol);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/surprise.mp3") != 0)
     return -1;
@@ -50,9 +53,10 @@ int main()
   }
   firer.close();
 
-  SpecImage picture(1025, 500, 4096, 500);
-  if (picture.createImage(generator.transformation_->specBuf))
-    std::cout << "\nImage created\n";
+  generator.plotSpectrogram();
+  //SpecImage picture(1025, 500, 4096, 500);
+  // if (picture.createImage(generator.transformation_->specBuf))
+  //   std::cout << "\nImage created\n";
 
   //drawing spectrogram
   // cv::Mat img(1024, 1000, CV_16UC1, cv::Scalar(0));
