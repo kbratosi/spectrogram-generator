@@ -3,4 +3,5 @@ bin/spectrograms
 .vscode/*
 test
 wyniki.txt
+*.pyc
 output/*

@@ -1,6 +1,7 @@
 #include "SpectrogramGenerator.hpp"
 #include "fft.hpp"
 #include "drawImg.hpp"
+#include "ConfigReader.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -10,20 +11,31 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <boost/test/unit_test.hpp>
 
+#include <boost/python.hpp>
+
 int main()
 {
   std::cout << "Hello world!" << std::endl;
   // Spooky scary skeleton!
   // *GUI
+  
   // get input
-  int out_sample_rate = 48000;
-  int inputSamples = 4096;
-  int height = 1025;
-  int width = 500;
+  GeneratorConfiguration config;
+  
+  try {
+    config.readConfig();
+  }
+  catch(boost::python::error_already_set const &) {
+    PyErr_Print();
+    return -1;
+  }
+
+  std::cout << config;
+
   int numOfCol = 500;
   // validate parameters
 
-  SpectrogramGenerator generator(out_sample_rate, inputSamples, height, width, numOfCol);
+  SpectrogramGenerator generator(config.out_sample_rate, config.fft_input_size, config.img_height, config.img_width, numOfCol);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/test20.mp3") != 0)
     return -1;
@@ -54,6 +66,7 @@ int main()
   firer.close();
 
   generator.plotSpectrogram();
+  
   //SpecImage picture(1025, 500, 4096, 500);
   // if (picture.createImage(generator.transformation_->specBuf))
   //   std::cout << "\nImage created\n";

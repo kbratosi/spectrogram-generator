@@ -14,16 +14,19 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS )
 # headers
 include_directories( ${CMAKE_HOME_DIRECTORY}/include )
 
-find_package( FFmpeg COMPONENTS avcodec avformat avutil swresample swscale REQUIRED )
+find_package( FFmpeg COMPONENTS avcodec avformat avutil swresample REQUIRED )
 find_package( FFTW REQUIRED )
 find_package( OpenCV REQUIRED )
-find_package( Boost COMPONENTS unit_test_framework REQUIRED)
+find_package( Python COMPONENTS Interpreter Development REQUIRED )
+find_package( Boost COMPONENTS unit_test_framework python REQUIRED )
 
 include_directories( 
   ${OpenCV_INCLUDE_DIRS}
   ${FFmpeg_INCLUDE_DIRS}
   ${FFTW_INCLUDE_DIRS}
+  ${Python_INCLUDE_DIRS}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+  ${Boost_PYTHON_LIBRARY}
 )
 
 add_executable( spectrograms ${TARGET_SRC} )
@@ -34,11 +37,12 @@ target_link_libraries(
   avutil
   avformat
   swresample 
-  swscale
   fftw3
   fftw3f
   ${OpenCV_LIBS}
+  ${Python_LIBRARIES}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+  ${Boost_PYTHON_LIBRARY}
 )
 
 # generating documentation
