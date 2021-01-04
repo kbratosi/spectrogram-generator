@@ -23,7 +23,7 @@ int main()
   GeneratorConfiguration config;
   
   try {
-    config.readConfig();
+    config.read();
   }
   catch(boost::python::error_already_set const &) {
     PyErr_Print();
@@ -32,41 +32,40 @@ int main()
 
   std::cout << config;
 
-  int numOfCol = 500;
-  // validate parameters
-
-  SpectrogramGenerator generator(config.out_sample_rate, config.fft_input_size, config.img_height, config.img_width, numOfCol);
+  // validate parameters!
+  
+  SpectrogramGenerator generator(&config);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/test20.mp3") != 0)
     return -1;
   if (generator.decodeAudioFile() != 0)
     return -1;
 
-  // temporary - delete later!
-  std::ofstream decoded;
-  decoded.open("test");
-  decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));
-  decoded.close();
+  // // temporary - delete later!
+  // std::ofstream decoded;
+  // decoded.open("test");
+  // decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));
+  // decoded.close();
 
   generator.processSamples();
 
-  //write outputData from FFT to file
-  std::ofstream firer;
-  firer.open("wyniki.txt");
+  // //write outputData from FFT to file
+  // std::ofstream firer;
+  // firer.open("wyniki.txt");
 
-  for (uint i = 0; i < generator.transformation_->specBuf.size(); ++i)
-  {
-    //firer << std::endl << "new frame " << i << std::endl;
-    for (int j = 0; j < 256 / 2 + 1; ++j)
-    {
-      firer << (generator.transformation_->specBuf[i][j]) << std::endl;
-      // }
-    }
-  }
-  firer.close();
-
-  generator.plotSpectrogram();
+  // for (uint i = 0; i < generator.transformation_->specBuf.size(); ++i)
+  // {
+  //   //firer << std::endl << "new frame " << i << std::endl;
+  //   for (int j = 0; j < 256 / 2 + 1; ++j)
+  //   {
+  //     firer << (generator.transformation_->specBuf[i][j]) << std::endl;
+  //     // }
+  //   }
+  // }
+  // firer.close();
   
+  generator.plotSpectrogram();
+
   //SpecImage picture(1025, 500, 4096, 500);
   // if (picture.createImage(generator.transformation_->specBuf))
   //   std::cout << "\nImage created\n";

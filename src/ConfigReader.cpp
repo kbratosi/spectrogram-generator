@@ -1,6 +1,6 @@
 #include "ConfigReader.hpp"
 
-void GeneratorConfiguration::readConfig() {
+void GeneratorConfiguration::read() {
   // initialize configuration script
   Py_Initialize();
   try {
@@ -11,6 +11,7 @@ void GeneratorConfiguration::readConfig() {
     img_width       = bp::extract<uint >(config_namespace["img_width"      ]);
     img_height      = bp::extract<uint >(config_namespace["img_height"     ]);
     fft_input_size  = bp::extract<uint >(config_namespace["fft_input_size" ]);
+    fft_per_img     = bp::extract<uint >(config_namespace["fft_per_img"    ]);
     fft_overlapping = bp::extract<float>(config_namespace["fft_overlapping"]);
   }
   catch(bp::error_already_set const &) {
@@ -24,6 +25,7 @@ std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg) {
             << "\nimg_width:       " << cfg.img_width
             << "\nimg_height:      " << cfg.img_height
             << "\nfft_input_size:  " << cfg.fft_input_size
+            << "\nfft_per_img:     " << cfg.fft_per_img
             << "\nfft_overlapping: " << cfg.fft_overlapping 
             << std::endl;
 }

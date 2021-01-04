@@ -11,10 +11,11 @@ struct GeneratorConfiguration {
   uint out_sample_rate,
        img_width,
        img_height,
-       fft_input_size;
+       fft_input_size,
+       fft_per_img;
   float fft_overlapping;
   //
-  void readConfig();
+  void read();
 };
 
 std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg);

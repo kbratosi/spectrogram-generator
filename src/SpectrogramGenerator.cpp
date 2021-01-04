@@ -1,13 +1,17 @@
 #include "SpectrogramGenerator.hpp"
 
-SpecGen::SpectrogramGenerator(const int sample_rate, const uint inputSamples, int height, int width, int numOfCol)
-{
+SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg) {
   data_ = nullptr;
   data_size_ = 0;
-  sample_rate_ = sample_rate;
-  transformation_ = new Fft_samples(inputSamples);
-  picture_ = new SpecImage(height, width, inputSamples, numOfCol);
+
+  out_sample_rate_ = cfg->out_sample_rate;
+  transformation_ = new Fft_samples(cfg->fft_input_size);
+  picture_ = new SpecImage(cfg->img_height,
+                           cfg->img_width,
+                           cfg->fft_input_size,
+                           cfg->fft_per_img    );
 }
+
 
 SpecGen::~SpectrogramGenerator()
 {
@@ -19,7 +23,7 @@ SpecGen::~SpectrogramGenerator()
 
 int SpecGen::setupDecoder(const char *file_name)
 {
-  if (decoder_.setup(file_name, sample_rate_) != 0)
+  if (decoder_.setup(file_name, out_sample_rate_) != 0)
   {
     fprintf(stderr, "Failed to setup decoder\n");
     return -1;
