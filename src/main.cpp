@@ -34,7 +34,7 @@ int main()
 
   int numOfCol = 500;
   // validate parameters
-  /*
+
   SpectrogramGenerator generator(config.out_sample_rate, config.fft_input_size, config.img_height, config.img_width, numOfCol);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/test20.mp3") != 0)
@@ -66,7 +66,7 @@ int main()
   firer.close();
 
   generator.plotSpectrogram();
-  */
+  
   //SpecImage picture(1025, 500, 4096, 500);
   // if (picture.createImage(generator.transformation_->specBuf))
   //   std::cout << "\nImage created\n";

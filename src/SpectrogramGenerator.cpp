@@ -14,6 +14,7 @@ SpecGen::~SpectrogramGenerator()
   if (data_)
     free(data_);
   delete transformation_;
+  delete picture_;
 }
 
 int SpecGen::setupDecoder(const char *file_name)
