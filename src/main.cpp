@@ -9,8 +9,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <boost/python.hpp>
-
-extern "C" PyObject *PyInit_config();
+#include <limits>
 
 int main()
 {
@@ -20,8 +19,7 @@ int main()
   // *GUI
   // get input
 
-  // Initialize Python
-  setenv("PYTHONPATH", ".", 1);
+  // initialize configuration script
   Py_Initialize();
   boost::python::object config_module = boost::python::import("config");
   boost::python::object config_namespace = config_module.attr("__dict__");
