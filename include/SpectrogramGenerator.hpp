@@ -3,10 +3,12 @@
 
 #include "Decoder.hpp"
 #include "fft.hpp"
+#include "drawImg.hpp"
 
 typedef class SpectrogramGenerator
 {
   Decoder decoder_;
+  SpecImage *picture_;
   //Fft_samples *transformation_;
 
 public:              // temporary - change later!
@@ -17,12 +19,13 @@ public:              // temporary - change later!
   Fft_samples *transformation_;
 
 public:
-  SpectrogramGenerator(const int sample_rate, const uint inputSamples);
+  SpectrogramGenerator(const int sample_rate, const uint inputSamples, int height, int width, int numOfCol);
   ~SpectrogramGenerator();
   int setupDecoder(const char *file_name);
   int decodeAudioFile();
 
   void processSamples();
+  void plotSpectrogram();
 
   //~
 } SpecGen;

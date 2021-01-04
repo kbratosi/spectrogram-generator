@@ -4,3 +4,4 @@ bin/spectrograms
 test
 wyniki.txt
 *.pyc
+output/*
