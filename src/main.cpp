@@ -1,6 +1,7 @@
 #include "SpectrogramGenerator.hpp"
 #include "fft.hpp"
 #include "drawImg.hpp"
+#include "ConfigReader.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -12,7 +13,7 @@
 
 #include <boost/python.hpp>
 
-namespace bp = boost::python;
+// namespace bp = boost::python;
 
 int main()
 {
@@ -21,41 +22,28 @@ int main()
   // *GUI
   
   // get input
-  uint out_sample_rate,
-       img_width,
-       img_height,
-       fft_input_size;
-  float fft_overlapping;
-
-  // initialize configuration script
-  Py_Initialize();
+  GeneratorConfiguration config;
+  
   try {
-    bp::object config_module = bp::import("config");
-    bp::object config_namespace = config_module.attr("__dict__");
-    //
-    out_sample_rate = bp::extract<int  >(config_namespace["out_sample_rate"]);
-    img_width       = bp::extract<int  >(config_namespace["img_width"      ]);
-    img_height      = bp::extract<int  >(config_namespace["img_height"     ]);
-    fft_input_size  = bp::extract<int  >(config_namespace["fft_input_size" ]);
-    fft_overlapping = bp::extract<float>(config_namespace["fft_overlapping"]);
+    config.readConfig();
   }
-  catch(bp::error_already_set const &) {
+  catch(boost::python::error_already_set const &) {
     PyErr_Print();
     return -1;
   }
-  // 
+
   std::cout << "Read parameters:"
-            << "\nout_sample_rate: " << out_sample_rate
-            << "\nimg_width:       " << img_width
-            << "\nimg_height:      " << img_height
-            << "\nfft_input_size:  " << fft_input_size
-            << "\nfft_overlapping: " << fft_overlapping 
+            << "\nout_sample_rate: " << config.out_sample_rate
+            << "\nimg_width:       " << config.img_width
+            << "\nimg_height:      " << config.img_height
+            << "\nfft_input_size:  " << config.fft_input_size
+            << "\nfft_overlapping: " << config.fft_overlapping 
             << std::endl;
   
   int numOfCol = 500;
   // validate parameters
 
-  SpectrogramGenerator generator(out_sample_rate, fft_input_size, img_height, img_width, numOfCol);
+  SpectrogramGenerator generator(config.out_sample_rate, config.fft_input_size, config.img_height, config.img_width, numOfCol);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/test20.mp3") != 0)
     return -1;
@@ -86,6 +74,7 @@ int main()
   firer.close();
 
   generator.plotSpectrogram();
+
   //SpecImage picture(1025, 500, 4096, 500);
   // if (picture.createImage(generator.transformation_->specBuf))
   //   std::cout << "\nImage created\n";
