@@ -38,7 +38,7 @@ public:
   Decoder();
   ~Decoder();
   int setup(const char *file_name, const int out_sample_rate);
-  int readFile(sample_fmt **data, int *data_size);
+  int readFile(sample_fmt **data, int *data_size, float in_frame_count, float delta_frame);
 };
 
 #endif

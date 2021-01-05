@@ -8,7 +8,7 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg) {
   transformation_ = new Fft_samples(cfg);
   picture_ = new SpecImage(cfg->img_height,
                            cfg->img_width,
-                           cfg->fft_input_time_window,
+                           cfg->fft_in_frame_count,
                            cfg->fft_per_img           );
 }
 
@@ -33,7 +33,8 @@ int SpecGen::setupDecoder(const char *file_name)
 
 int SpecGen::decodeAudioFile()
 {
-  if (decoder_.readFile(&data_, &data_size_) != 0)
+  float in_frame_count = 1102.5;
+  if (decoder_.readFile(&data_, &data_size_, in_frame_count, in_frame_count * 0.5) != 0)
   {
     fprintf(stderr, "Failed to decode file");
     return -1;
