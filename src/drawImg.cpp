@@ -28,6 +28,7 @@ int SpecImage::createImage(std::vector<float *> data)
     int numOfImages = data.size() / x_;
     for (int k = 0; k < numOfImages; ++k)
     {
+#pragma omp parallel for
         for (int i = 0; i < x_; ++i)
         {
             for (int j = 0; j < y_; ++j)

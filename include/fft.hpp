@@ -10,6 +10,7 @@
 #include <fftw3.h>
 #include <math.h>
 #include <cstring>
+#include <omp.h>
 
 class Fft_samples
 {
