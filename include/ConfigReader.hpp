@@ -15,7 +15,8 @@ struct GeneratorConfiguration {
   float fft_overlapping,
         fft_input_time_window;
   //
-  float fft_in_frame_count;
+  float fft_in_frame_count,
+        delta_frame;
   uint fft_out_frame_count;
 
   //

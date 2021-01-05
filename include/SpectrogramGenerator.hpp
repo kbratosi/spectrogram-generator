@@ -8,7 +8,7 @@
 
 typedef class SpectrogramGenerator
 {
-  Decoder decoder_;
+  Decoder *decoder_;
   SpecImage *picture_;
   Fft_samples *transformation_;
 

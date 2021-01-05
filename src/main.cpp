@@ -33,15 +33,16 @@ int main()
 
   // validate parameters!
   
-  // SpectrogramGenerator generator(&config);
-  // std::cout << "Decoder" << std::endl;
-  // if (generator.setupDecoder("audio/test20.mp3") != 0)
-  //   return -1;
-  // if (generator.decodeAudioFile() != 0)
-  //   return -1;
-
-  //generator.processSamples();
-  //generator.plotSpectrogram();
+  SpectrogramGenerator generator(&config);
+  std::cout << "Decoder" << std::endl;
+  if (generator.setupDecoder("audio/test20.mp3") != 0)
+    return -1;
+  if (generator.decodeAudioFile() != 0)
+    return -1;
+  std::cout << "FFT" << std::endl;
+  generator.processSamples();
+  std::cout << "OpenCV" << std::endl;
+  generator.plotSpectrogram();
 
   // // temporary - delete later!
   // std::ofstream decoded;

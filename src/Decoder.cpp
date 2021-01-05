@@ -1,6 +1,7 @@
 #include "Decoder.hpp"
 
-Decoder::Decoder()
+Decoder::Decoder(const GeneratorConfiguration *cfg):
+IN_FRAME_COUNT(cfg->fft_in_frame_count), DELTA_FRAME(cfg->delta_frame)
 {
   audio_stream_index_ = -1;
   av_format_ctx_ = nullptr;
@@ -56,16 +57,15 @@ int Decoder::setup(const char *file_name, const int out_sample_rate)
   return 0;
 }
 
-int Decoder::readFile(sample_fmt **data, int *data_size, float in_frame_count, float delta_frame)
+int Decoder::readFile(sample_fmt **data, int *data_size)
 {
-  int data_capacity = FRAME_ALLOC_UNIT;
+  long data_capacity = FRAME_ALLOC_UNIT;
   *data = (sample_fmt *)malloc(data_capacity * sizeof(sample_fmt));
   // failure state!
   int frame_count = 0;
 
   // append overlap 0's for first FFT input window
-  frame_count = (in_frame_count - delta_frame);
-  std::cout << "frame_count: " << frame_count << " vs " << in_frame_count - delta_frame << std::endl;
+  frame_count = IN_FRAME_COUNT - DELTA_FRAME;
   memset(*data, 0, frame_count * sizeof(sample_fmt));
   *data_size += frame_count;
 
@@ -119,16 +119,15 @@ int Decoder::readFile(sample_fmt **data, int *data_size, float in_frame_count, f
     av_freep(&buffer);
     av_packet_unref(av_packet_);
   }
-  std::cout << "Data size: " << *data_size << std::endl;
 
   // append 0's to fill the last FFT input window
-  data_capacity = (int)((int)*data_size / delta_frame ) * delta_frame + (int)in_frame_count;
+  data_capacity = *data_size / DELTA_FRAME; 
+  data_capacity *= DELTA_FRAME;
+  data_capacity += IN_FRAME_COUNT;
   *data = (sample_fmt *)realloc(*data, data_capacity * sizeof(sample_fmt));
   memset(*data + *data_size, 0, (data_capacity - *data_size) * sizeof(sample_fmt));
   *data_size = data_capacity;
-  std::cout << "Data size: " << *data_size
-            << "\nSamples: " << (float)*data_size / (int)in_frame_count  << std::endl;
-  
+
   return 0;
 }
 

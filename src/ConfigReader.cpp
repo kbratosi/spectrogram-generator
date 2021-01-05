@@ -19,6 +19,7 @@ void GeneratorConfiguration::read() {
   }
   fft_in_frame_count = out_sample_rate * fft_input_time_window / 1000;
   fft_out_frame_count = fft_in_frame_count / 2 + 1;
+  delta_frame = (1 - fft_overlapping) * fft_in_frame_count;
 }
 
 std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg) {
@@ -32,5 +33,6 @@ std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg) {
             << "\nCalculated parameters:"
             << "\nfft_in_frame_count:    " << cfg.fft_in_frame_count
             << "\nfft_out_frame_count:   " << cfg.fft_out_frame_count
+            << "\ndelta_frame:           " << cfg.delta_frame
             << std::endl;
 }

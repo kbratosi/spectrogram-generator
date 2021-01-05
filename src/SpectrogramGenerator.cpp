@@ -5,6 +5,8 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg) {
   data_size_ = 0;
 
   out_sample_rate_ = cfg->out_sample_rate;
+
+  decoder_ = new Decoder(cfg);
   transformation_ = new Fft_samples(cfg);
   picture_ = new SpecImage(cfg->img_height,
                            cfg->img_width,
@@ -17,13 +19,14 @@ SpecGen::~SpectrogramGenerator()
 {
   if (data_)
     free(data_);
+  delete decoder_;
   delete transformation_;
   delete picture_;
 }
 
 int SpecGen::setupDecoder(const char *file_name)
 {
-  if (decoder_.setup(file_name, out_sample_rate_) != 0)
+  if (decoder_->setup(file_name, out_sample_rate_) != 0)
   {
     fprintf(stderr, "Failed to setup decoder\n");
     return -1;
@@ -33,8 +36,7 @@ int SpecGen::setupDecoder(const char *file_name)
 
 int SpecGen::decodeAudioFile()
 {
-  float in_frame_count = 1102.5;
-  if (decoder_.readFile(&data_, &data_size_, in_frame_count, in_frame_count * 0.5) != 0)
+  if (decoder_->readFile(&data_, &data_size_) != 0)
   {
     fprintf(stderr, "Failed to decode file");
     return -1;

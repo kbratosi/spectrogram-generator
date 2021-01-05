@@ -11,11 +11,12 @@ extern "C"
 }
 #endif
 
+#include "ConfigReader.hpp"
+
 #include <iostream>
 
 typedef float sample_fmt;           // sample format - bit depth & int/float coding
 
-// class
 class Decoder
 {
   AVFormatContext *av_format_ctx_;  // file information
@@ -24,6 +25,9 @@ class Decoder
   AVPacket *av_packet_;             // compressed data
   AVFrame *av_frame_;               // raw audio
   int audio_stream_index_;
+
+  const float IN_FRAME_COUNT;
+  const float DELTA_FRAME;
 
   const int MONO = 1;
   const int FRAME_ALLOC_UNIT = 4000000;
@@ -35,10 +39,10 @@ class Decoder
   const char *avMakeError(int errnum);
 
 public:
-  Decoder();
+  Decoder(const GeneratorConfiguration *cfg);
   ~Decoder();
   int setup(const char *file_name, const int out_sample_rate);
-  int readFile(sample_fmt **data, int *data_size, float in_frame_count, float delta_frame);
+  int readFile(sample_fmt **data, int *data_size);
 };
 
 #endif

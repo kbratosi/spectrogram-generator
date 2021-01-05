@@ -18,8 +18,7 @@ public:
     ~Fft_samples();
 
     void processSamples(const sample_fmt *data, uint data_size);
-    void fillBuffer(float *outSamples, const sample_fmt *inPcmData, uint sampleCount);
-    void hanningWindow();
+    void hanningWindow(const sample_fmt *curr_window_head);
     void runFft();
 
     std::vector<float *> specBuf;
@@ -27,13 +26,12 @@ public:
 private:
     const uint FFT_INPUT_SAMPLES;
     const uint FFT_OUTPUT_SAMPLES;
-
-    float *inBuf, *windowedBuf;
-
-    fftwf_complex *outBuf;
-    uint inBufPos;
+    const float DELTA_FRAME;
 
     fftwf_plan plan;
+
+    float *input_window_;
+    fftwf_complex *output_buffer_;
 };
 
 #endif
