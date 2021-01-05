@@ -21,7 +21,6 @@ int main()
   
   // get input
   GeneratorConfiguration config;
-  
   try {
     config.read();
   }
@@ -29,7 +28,7 @@ int main()
     PyErr_Print();
     return -1;
   }
-
+  // display read parameters
   std::cout << config;
 
   // validate parameters!
@@ -40,6 +39,10 @@ int main()
     return -1;
   if (generator.decodeAudioFile() != 0)
     return -1;
+  std::cout << "FFT" << std::endl;
+  generator.processSamples();
+  std::cout << "OpenCV" << std::endl;
+  generator.plotSpectrogram();
 
   // // temporary - delete later!
   // std::ofstream decoded;
@@ -47,7 +50,6 @@ int main()
   // decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));
   // decoded.close();
 
-  generator.processSamples();
 
   // //write outputData from FFT to file
   // std::ofstream firer;
@@ -64,7 +66,6 @@ int main()
   // }
   // firer.close();
   
-  generator.plotSpectrogram();
 
   //SpecImage picture(1025, 500, 4096, 500);
   // if (picture.createImage(generator.transformation_->specBuf))

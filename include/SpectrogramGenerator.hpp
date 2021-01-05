@@ -8,7 +8,7 @@
 
 typedef class SpectrogramGenerator
 {
-  Decoder decoder_;
+  Decoder *decoder_;
   SpecImage *picture_;
   Fft_samples *transformation_;
 
@@ -25,8 +25,6 @@ public:
 
   void processSamples();
   void plotSpectrogram();
-
-  //~
 } SpecGen;
 
 #endif

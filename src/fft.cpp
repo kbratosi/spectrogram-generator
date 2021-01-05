@@ -2,23 +2,20 @@
 #include <cassert>
 #include <iostream>
 
-Fft_samples::Fft_samples(const uint inputSamples) : FFT_INPUT_SAMPLES(inputSamples), FFT_OUTPUT_SAMPLES((inputSamples / 2) + 1)
+Fft_samples::Fft_samples(const GeneratorConfiguration *cfg):
+  FFT_INPUT_SAMPLES(cfg->fft_in_frame_count),
+  FFT_OUTPUT_SAMPLES(cfg->fft_out_frame_count),
+  DELTA_FRAME(cfg->delta_frame)
 {
-    inBuf = new float[FFT_INPUT_SAMPLES];
-    windowedBuf = new float[FFT_INPUT_SAMPLES];
-    inBufPos = FFT_INPUT_SAMPLES / 2;
-    outBuf = new fftwf_complex[FFT_OUTPUT_SAMPLES];
-    plan = fftwf_plan_dft_r2c_1d(FFT_INPUT_SAMPLES, windowedBuf, outBuf, FFTW_ESTIMATE);
-
-    for (uint i = 0; i < FFT_INPUT_SAMPLES / 2; ++i)
-        inBuf[i] = 0.f;
+  input_window_ = new float[FFT_INPUT_SAMPLES];
+  output_buffer_ = new fftwf_complex[FFT_OUTPUT_SAMPLES]; 
+  plan = fftwf_plan_dft_r2c_1d(FFT_INPUT_SAMPLES, input_window_, output_buffer_, FFTW_ESTIMATE);
 }
 
 Fft_samples::~Fft_samples()
 {
-    delete[] inBuf;
-    delete[] windowedBuf;
-    delete[] outBuf;
+    delete[] input_window_;
+    delete[] output_buffer_;
     for (int i = 0; i < specBuf.size(); ++i)
     {
         delete[] specBuf[i];
@@ -28,59 +25,37 @@ Fft_samples::~Fft_samples()
 }
 
 void Fft_samples::processSamples(const sample_fmt *data, uint data_size)
-{
-    const sample_fmt *bufBytes = data;
-    uint samples = data_size;
-    int iter = 0;
-    while (samples)
-    {
-        uint samplesToCopy = std::min(samples, FFT_INPUT_SAMPLES - inBufPos);
-        std::cout << "Samples to copy: " << samplesToCopy << " iteration: " << ++iter << std::endl;
-        fillBuffer(inBuf + inBufPos, bufBytes, samplesToCopy);
-        inBufPos += samplesToCopy;
-        if (inBufPos == FFT_INPUT_SAMPLES) //fill rest of samples with 0 to calculate FFT
-        {
-            runFft();
-            memcpy(inBuf, inBuf + FFT_INPUT_SAMPLES / 2, sizeof(float) * FFT_INPUT_SAMPLES / 2);
-            inBufPos = FFT_INPUT_SAMPLES / 2;
-        }
-
-        samples -= samplesToCopy;
-        bufBytes += samplesToCopy;
-    }
+{ 
+  float curr_frame = 0;
+  while(curr_frame + FFT_INPUT_SAMPLES <= static_cast<float>(data_size) )
+  {
+    hanningWindow(data + static_cast<int>(curr_frame));
+    runFft();
+    curr_frame += DELTA_FRAME;
+  }
 }
 
-void Fft_samples::fillBuffer(float *outSamples, const sample_fmt *inPcmData, uint sampleCount)
+void Fft_samples::hanningWindow(const sample_fmt *curr_window_head)
 {
-    // for (uint i = 0; i < sampleCount; ++i, ++inPcmData, ++outSamples)
-    // {
-    //short Sample = *(const short *)inPcmData; //ask yourself is it obligatory??? does it make sense?
-    memcpy(outSamples, inPcmData, sizeof(sample_fmt) * sampleCount);
-    // }
-}
-
-void Fft_samples::hanningWindow()
-{
-    for (uint i = 0; i < FFT_INPUT_SAMPLES; ++i)
-    {
-        windowedBuf[i] = inBuf[i];
-        // windowedBuf[i] *= 0.54f - 0.46f * cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1));
-        windowedBuf[i] *= 0.5f * (1 - cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1)));
-    }
+  for (uint i = 0; i < FFT_INPUT_SAMPLES; ++i)
+  {
+    input_window_[i] = *(curr_window_head + i);
+    // windowedBuf[i] *= 0.54f - 0.46f * cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1));
+    input_window_[i] *= 0.5f * (1 - cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1)));
+  }
 }
 
 void Fft_samples::runFft()
 {
-    hanningWindow();
     fftwf_execute(plan);
 
     float *tempBuf = new float[FFT_OUTPUT_SAMPLES];
 
     for (uint i = 0; i < FFT_OUTPUT_SAMPLES; ++i)
     {
-        outBuf[i][0] *= (2. / FFT_INPUT_SAMPLES);
-        outBuf[i][1] *= (2. / FFT_INPUT_SAMPLES);
-        tempBuf[i] = 10. / log(10.) * log(pow(outBuf[i][0], 2) + pow(outBuf[i][1], 2) + 1e-6); //max value - 96dB
+        output_buffer_[i][0] *= (2. / FFT_INPUT_SAMPLES);
+        output_buffer_[i][1] *= (2. / FFT_INPUT_SAMPLES);
+        tempBuf[i] = 10. / log(10.) * log(pow(output_buffer_[i][0], 2) + pow(output_buffer_[i][1], 2) + 1e-6); //max value - 96dB
     }
 
     specBuf.push_back(tempBuf);

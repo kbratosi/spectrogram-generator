@@ -1,6 +1,7 @@
 #include "Decoder.hpp"
 
-Decoder::Decoder()
+Decoder::Decoder(const GeneratorConfiguration *cfg):
+IN_FRAME_COUNT(cfg->fft_in_frame_count), DELTA_FRAME(cfg->delta_frame)
 {
   audio_stream_index_ = -1;
   av_format_ctx_ = nullptr;
@@ -58,10 +59,18 @@ int Decoder::setup(const char *file_name, const int out_sample_rate)
 
 int Decoder::readFile(sample_fmt **data, int *data_size)
 {
+  long data_capacity = FRAME_ALLOC_UNIT;
+  *data = (sample_fmt *)malloc(data_capacity * sizeof(sample_fmt));
+  // failure state!
+  int frame_count = 0;
+
+  // append overlap 0's for first FFT input window
+  frame_count = IN_FRAME_COUNT - DELTA_FRAME;
+  memset(*data, 0, frame_count * sizeof(sample_fmt));
+  *data_size += frame_count;
+
   while (av_read_frame(av_format_ctx_, av_packet_) >= 0)
   {
-    int response;
-
     // if stream indexes do not match -> skip packet
     if (av_packet_->stream_index != audio_stream_index_)
     {
@@ -70,7 +79,7 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
     }
 
     // send packet to decoder
-    response = avcodec_send_packet(av_codec_ctx_, av_packet_);
+    int response = avcodec_send_packet(av_codec_ctx_, av_packet_);
     if (response < 0)
     {
       fprintf(stderr, "Failed to decode packet: %s\n", avMakeError(response));
@@ -92,10 +101,17 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
 
     // resample frames
     uint8_t *buffer;
-    av_samples_alloc(&buffer, nullptr, 1, av_frame_->nb_samples, AV_SAMPLE_FMT_FLT, 0);
-    int frame_count = swr_convert(swr_, &buffer, av_frame_->nb_samples, (const uint8_t **)av_frame_->data, av_frame_->nb_samples);
+    av_samples_alloc(&buffer, nullptr, MONO, av_frame_->nb_samples, AV_SAMPLE_FMT_FLT, 0);
+    frame_count = swr_convert(swr_, &buffer, av_frame_->nb_samples, (const uint8_t **)av_frame_->data, av_frame_->nb_samples);
+    
+    // reallocate memory when data array is too small to append a new buffer
+    if(*data_size + frame_count > data_capacity) {
+      data_capacity += FRAME_ALLOC_UNIT;
+      *data = (sample_fmt *)realloc(*data, data_capacity * sizeof(sample_fmt));
+      // failure state!
+    }
+    
     // append resampled frames to data
-    *data = (sample_fmt *)realloc(*data, (*data_size + av_frame_->nb_samples) * sizeof(sample_fmt));
     memcpy(*data + *data_size, buffer, frame_count * sizeof(sample_fmt));
     *data_size += frame_count;
 
@@ -103,6 +119,15 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
     av_freep(&buffer);
     av_packet_unref(av_packet_);
   }
+
+  // append 0's to fill the last FFT input window
+  data_capacity = *data_size / DELTA_FRAME; 
+  data_capacity *= DELTA_FRAME;
+  data_capacity += IN_FRAME_COUNT;
+  *data = (sample_fmt *)realloc(*data, data_capacity * sizeof(sample_fmt));
+  memset(*data + *data_size, 0, (data_capacity - *data_size) * sizeof(sample_fmt));
+  *data_size = data_capacity;
+
   return 0;
 }
 
