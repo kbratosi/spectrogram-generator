@@ -4,7 +4,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
 
 project( spectrograms./ )
 
-add_compile_options( -Wall -Wextra -pedantic )
+add_compile_options( -Wall -Wextra -pedantic -lfftw3_omp -lfftw3 -lm -fopenmp)
 
 file( GLOB TARGET_SRC "./src/*.cpp" )
 
@@ -17,6 +17,7 @@ include_directories( ${CMAKE_HOME_DIRECTORY}/include )
 find_package( FFmpeg COMPONENTS avcodec avformat avutil swresample REQUIRED )
 find_package( FFTW REQUIRED )
 find_package( OpenCV REQUIRED )
+find_package( OpenMP REQUIRED ) 
 find_package( Python COMPONENTS Interpreter Development REQUIRED )
 find_package( Boost COMPONENTS unit_test_framework python REQUIRED )
 
@@ -25,6 +26,7 @@ include_directories(
   ${FFmpeg_INCLUDE_DIRS}
   ${FFTW_INCLUDE_DIRS}
   ${Python_INCLUDE_DIRS}
+  ${OpenMP_CXX_INCLUDE_DIRS}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
   ${Boost_PYTHON_LIBRARY}
 )
@@ -39,8 +41,10 @@ target_link_libraries(
   swresample 
   fftw3
   fftw3f
+  fftw3_omp
   ${OpenCV_LIBS}
   ${Python_LIBRARIES}
+  ${OpenMP_CXX_LIBRARIES}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
   ${Boost_PYTHON_LIBRARY}
 )

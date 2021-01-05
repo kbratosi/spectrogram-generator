@@ -2,6 +2,7 @@
 #include "fft.hpp"
 #include "drawImg.hpp"
 #include "ConfigReader.hpp"
+#include "Benchmark.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -18,13 +19,15 @@ int main()
   std::cout << "Hello world!" << std::endl;
   // Spooky scary skeleton!
   // *GUI
-  
+
   // get input
   GeneratorConfiguration config;
-  try {
+  try
+  {
     config.read();
   }
-  catch(boost::python::error_already_set const &) {
+  catch (boost::python::error_already_set const &)
+  {
     PyErr_Print();
     return -1;
   }
@@ -32,24 +35,32 @@ int main()
   std::cout << config;
 
   // validate parameters!
-  
+
   SpectrogramGenerator generator(&config);
   std::cout << "Decoder" << std::endl;
   if (generator.setupDecoder("audio/test20.mp3") != 0)
     return -1;
   if (generator.decodeAudioFile() != 0)
     return -1;
+
   std::cout << "FFT" << std::endl;
+  Benchmark<std::chrono::milliseconds> fftTime;
   generator.processSamples();
+  size_t score1 = fftTime.elapsed();
+
   std::cout << "OpenCV" << std::endl;
+  Benchmark<std::chrono::milliseconds> cvTime;
   generator.plotSpectrogram();
+  size_t score2 = cvTime.elapsed();
+
+  std::cout << "FFT: " << score1 << " ms" << std::endl
+            << "OpenCV: " << score2 << " ms" << std::endl;
 
   // // temporary - delete later!
   // std::ofstream decoded;
   // decoded.open("test");
   // decoded.write((char *)generator.data_, generator.data_size_ * sizeof(sample_fmt));
   // decoded.close();
-
 
   // //write outputData from FFT to file
   // std::ofstream firer;
@@ -65,7 +76,6 @@ int main()
   //   }
   // }
   // firer.close();
-  
 
   //SpecImage picture(1025, 500, 4096, 500);
   // if (picture.createImage(generator.transformation_->specBuf))
