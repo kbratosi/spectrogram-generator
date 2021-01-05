@@ -1,6 +1,7 @@
 #ifndef FFT_HPP
 #define FFT_HPP
 
+#include "ConfigReader.hpp"
 #include "Decoder.hpp"
 
 #include <vector>
@@ -13,7 +14,7 @@
 class Fft_samples
 {
 public:
-    Fft_samples(const uint inputSamples);
+    Fft_samples(const GeneratorConfiguration *cfg);
     ~Fft_samples();
 
     void processSamples(const sample_fmt *data, uint data_size);

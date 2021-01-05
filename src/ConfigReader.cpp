@@ -17,6 +17,8 @@ void GeneratorConfiguration::read() {
   catch(bp::error_already_set const &) {
     throw;
   }
+  fft_in_frame_count = out_sample_rate * fft_input_time_window / 1000;
+  fft_out_frame_count = fft_in_frame_count / 2 + 1;
 }
 
 std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg) {
@@ -26,6 +28,9 @@ std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg) {
             << "\nimg_height:            " << cfg.img_height
             << "\nfft_per_img:           " << cfg.fft_per_img
             << "\nfft_input_time_window: " << cfg.fft_input_time_window
-            << "\nfft_overlapping:       " << cfg.fft_overlapping 
+            << "\nfft_overlapping:       " << cfg.fft_overlapping
+            << "\nCalculated parameters:"
+            << "\nfft_in_frame_count:    " << cfg.fft_in_frame_count
+            << "\nfft_out_frame_count:   " << cfg.fft_out_frame_count
             << std::endl;
 }

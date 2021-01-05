@@ -2,16 +2,18 @@
 #include <cassert>
 #include <iostream>
 
-Fft_samples::Fft_samples(const uint inputSamples) : FFT_INPUT_SAMPLES(inputSamples), FFT_OUTPUT_SAMPLES((inputSamples / 2) + 1)
+Fft_samples::Fft_samples(const GeneratorConfiguration *cfg):
+  FFT_INPUT_SAMPLES(cfg->fft_in_frame_count),
+  FFT_OUTPUT_SAMPLES(cfg->fft_out_frame_count)
 {
-    inBuf = new float[FFT_INPUT_SAMPLES];
-    windowedBuf = new float[FFT_INPUT_SAMPLES];
-    inBufPos = FFT_INPUT_SAMPLES / 2;
-    outBuf = new fftwf_complex[FFT_OUTPUT_SAMPLES];
-    plan = fftwf_plan_dft_r2c_1d(FFT_INPUT_SAMPLES, windowedBuf, outBuf, FFTW_ESTIMATE);
+  inBuf = new float[FFT_INPUT_SAMPLES];
+  windowedBuf = new float[FFT_INPUT_SAMPLES];
+  inBufPos = FFT_INPUT_SAMPLES / 2;
+  outBuf = new fftwf_complex[FFT_OUTPUT_SAMPLES];
+  plan = fftwf_plan_dft_r2c_1d(FFT_INPUT_SAMPLES, windowedBuf, outBuf, FFTW_ESTIMATE);
 
-    for (uint i = 0; i < FFT_INPUT_SAMPLES / 2; ++i)
-        inBuf[i] = 0.f;
+  for (uint i = 0; i < FFT_INPUT_SAMPLES / 2; ++i)
+    inBuf[i] = 0.f;
 }
 
 Fft_samples::~Fft_samples()

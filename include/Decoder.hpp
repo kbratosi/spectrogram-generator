@@ -26,7 +26,7 @@ class Decoder
   int audio_stream_index_;
 
   const int MONO = 1;
-  const int ALLOCATION_UNIT = 16 * 1024 * 1024;   // 16 MB
+  const int FRAME_ALLOC_UNIT = 4000000;
 
   int initFormatContext(const char *file_name);
   int initCodecContext(const char *file_name);
