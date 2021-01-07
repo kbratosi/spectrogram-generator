@@ -22,7 +22,7 @@ public:
   ~SpectrogramGenerator();
 
   void openFile(const char *file_name);
-  int setupDecoder(const char *file_name);
+  void setupDecoder();
   int decodeAudioFile();
 
   void processSamples();

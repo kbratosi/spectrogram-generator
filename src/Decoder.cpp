@@ -58,7 +58,10 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
 {
   long data_capacity = FRAME_ALLOC_UNIT;
   *data = (sample_fmt *)malloc(data_capacity * sizeof(sample_fmt));
-  // failure state!
+  if(!*data) 
+  {
+    throw std::runtime_error("Couldn't allocate memory\n");
+  }
   int frame_count = 0;
 
   // append overlap 0's for first FFT input window
@@ -137,8 +140,7 @@ void Decoder::initFormatContext(const char *file_name)
   }
   if (avformat_open_input(&av_format_ctx_, file_name, nullptr, nullptr) != 0)
   {
-    std::string error = std::string("Could not open file '%s'\n", file_name);
-    throw std::runtime_error(error);
+    throw std::runtime_error(std::string("Could not open file '%s'\n", file_name));
   }
   // retrieve stream information from file header
   if (avformat_find_stream_info(av_format_ctx_, nullptr) < 0)

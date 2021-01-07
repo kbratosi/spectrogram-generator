@@ -33,14 +33,14 @@ void SpecGen::openFile(const char *file_name) {
   }
 }
 
-int SpecGen::setupDecoder(const char *file_name)
+void SpecGen::setupDecoder()
 {
-  if (decoder_->setup(file_name, out_sample_rate_) != 0)
-  {
-    fprintf(stderr, "Failed to setup decoder\n");
-    return -1;
+  try {
+    decoder_->setup();
   }
-  return 0;
+  catch(std::exception &e) {
+    throw std::runtime_error(std::string("Decoder setup: %s", e.what()));
+  }
 }
 
 int SpecGen::decodeAudioFile()
