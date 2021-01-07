@@ -35,7 +35,9 @@ class Decoder
 
   void initFormatContext(const char *file_name);
   void initCodecContext();
-  int initSwrContext(const int out_sample_rate);
+  void initSwrContext();
+  void initPacket();
+  void initFrame();
 
   const char *avMakeError(int errnum);
 
@@ -43,7 +45,7 @@ public:
   Decoder(const GeneratorConfiguration *cfg);
   ~Decoder();
   void openFile(const char *file_name);
-  int setup(const char *file_name, const int out_sample_rate);
+  void setup();
   int readFile(sample_fmt **data, int *data_size);
 };
 
