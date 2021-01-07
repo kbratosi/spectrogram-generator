@@ -23,7 +23,7 @@ public:
 
   void openFile(const char *file_name);
   void setupDecoder();
-  int decodeAudioFile();
+  void decodeAudioFile();
 
   void processSamples();
   void plotSpectrogram();

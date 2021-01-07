@@ -39,6 +39,9 @@ class Decoder
   void initPacket();
   void initFrame();
 
+  //void addPrefix(sample_fmt **data, int *data_size);
+  //void addSuffix(sample_fmt **data, int *data_size);
+
   const char *avMakeError(int errnum);
 
 public:
@@ -46,7 +49,7 @@ public:
   ~Decoder();
   void openFile(const char *file_name);
   void setup();
-  int readFile(sample_fmt **data, int *data_size);
+  void readFile(sample_fmt **data, int *data_size);
 };
 
 #endif

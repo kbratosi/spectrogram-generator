@@ -41,13 +41,12 @@ int main()
   try {
     generator.openFile("audio/test20.mp3");
     generator.setupDecoder();
+    generator.decodeAudioFile();
   }
   catch(std::exception &e) {
     std::cerr << e.what() << std::endl;
     return -1;
   }
-  if (generator.decodeAudioFile() != 0)
-    return -1;
 
   std::cout << "FFT" << std::endl;
   Benchmark<std::chrono::milliseconds> fftTime;

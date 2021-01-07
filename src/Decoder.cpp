@@ -54,7 +54,7 @@ void Decoder::setup()
   }
 }
 
-int Decoder::readFile(sample_fmt **data, int *data_size)
+void Decoder::readFile(sample_fmt **data, int *data_size)
 {
   long data_capacity = FRAME_ALLOC_UNIT;
   *data = (sample_fmt *)malloc(data_capacity * sizeof(sample_fmt));
@@ -82,8 +82,7 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
     int response = avcodec_send_packet(av_codec_ctx_, av_packet_);
     if (response < 0)
     {
-      fprintf(stderr, "Failed to decode packet: %s\n", avMakeError(response));
-      return -1;
+      throw std::runtime_error(std::string("Failed to decode packet: %s\n", avMakeError(response)));
     }
 
     // receive decoded frame
@@ -95,8 +94,7 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
     }
     else if (response < 0)
     {
-      fprintf(stderr, "Failed to decode packet: %s\n", avMakeError(response));
-      return -1;
+      throw std::runtime_error(std::string("Failed to decode packet: %s\n", avMakeError(response)));
     }
 
     // resample frames
@@ -108,7 +106,10 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
     if(*data_size + frame_count > data_capacity) {
       data_capacity += FRAME_ALLOC_UNIT;
       *data = (sample_fmt *)realloc(*data, data_capacity * sizeof(sample_fmt));
-      // failure state!
+      if(!*data) 
+      {
+        throw std::runtime_error("Couldn't allocate memory\n");
+      }
     }
     
     // append resampled frames to data
@@ -125,10 +126,12 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
   data_capacity *= DELTA_FRAME;
   data_capacity += IN_FRAME_COUNT;
   *data = (sample_fmt *)realloc(*data, data_capacity * sizeof(sample_fmt));
+  if(!*data) 
+  {
+    throw std::runtime_error("Couldn't allocate memory\n");
+  }
   memset(*data + *data_size, 0, (data_capacity - *data_size) * sizeof(sample_fmt));
   *data_size = data_capacity;
-
-  return 0;
 }
 
 // open file using libavcodec, retrieve information from header
@@ -138,13 +141,11 @@ void Decoder::initFormatContext(const char *file_name)
   if (!av_format_ctx_) {
     throw std::runtime_error("Couldn't create AVFormatContext\n");
   }
-  if (avformat_open_input(&av_format_ctx_, file_name, nullptr, nullptr) != 0)
-  {
+  if (avformat_open_input(&av_format_ctx_, file_name, nullptr, nullptr) != 0) {
     throw std::runtime_error(std::string("Could not open file '%s'\n", file_name));
   }
   // retrieve stream information from file header
-  if (avformat_find_stream_info(av_format_ctx_, nullptr) < 0)
-  {
+  if (avformat_find_stream_info(av_format_ctx_, nullptr) < 0) {
     std::string error = std::string("Could not retrieve stream information from '%s'\n", file_name);
     throw std::runtime_error(error);
   }
@@ -178,18 +179,15 @@ void Decoder::initCodecContext()
 
   // find & open codec
   av_codec_ctx_ = avcodec_alloc_context3(av_codec);
-  if (!av_codec_ctx_)
-  {
+  if (!av_codec_ctx_) {
     throw std::runtime_error("Failed to create AVCodecContext\n");
   }
 
-  if (avcodec_parameters_to_context(av_codec_ctx_, av_codec_params) < 0)
-  {
+  if (avcodec_parameters_to_context(av_codec_ctx_, av_codec_params) < 0) {
     throw std::runtime_error("Couldn't initialize AVCodecContext\n");
   }
 
-  if (avcodec_open2(av_codec_ctx_, av_codec, nullptr) < 0)
-  {
+  if (avcodec_open2(av_codec_ctx_, av_codec, nullptr) < 0) {
     throw std::runtime_error("Couldn't open codec\n");
   }
 }
@@ -198,6 +196,7 @@ void Decoder::initCodecContext()
 void Decoder::initSwrContext()
 {
   swr_ = swr_alloc();
+  
   av_opt_set_int(swr_, "in_channel_count", av_codec_ctx_->channels, 0);
   av_opt_set_int(swr_, "out_channel_count", 1, 0);
   av_opt_set_int(swr_, "in_channel_layout", av_codec_ctx_->channel_layout, 0);
@@ -206,25 +205,23 @@ void Decoder::initSwrContext()
   av_opt_set_int(swr_, "out_sample_rate", OUT_SAMPLE_RATE, 0);
   av_opt_set_sample_fmt(swr_, "in_sample_fmt", av_codec_ctx_->sample_fmt, 0);
   av_opt_set_sample_fmt(swr_, "out_sample_fmt", AV_SAMPLE_FMT_FLT, 0);
+  
   swr_init(swr_);
-  if (!swr_is_initialized(swr_))
-  {
+  if (!swr_is_initialized(swr_)) {
     throw std::runtime_error("Resampler has not been properly initialized\n");
   }
 }
 
 void Decoder::initPacket() {
   av_packet_ = av_packet_alloc();
-  if (!av_packet_)
-  {
+  if (!av_packet_) {
     throw std::runtime_error("Error allocating AVPacket\n");
   }
 }
 
 void Decoder::initFrame() {
   av_frame_ = av_frame_alloc();
-  if (!av_frame_)
-  {
+  if (!av_frame_) {
     throw std::runtime_error("Error allocating AVFrame\n");
   }
 }

@@ -29,7 +29,7 @@ void SpecGen::openFile(const char *file_name) {
     decoder_->openFile(file_name);
   }
   catch(std::exception &e) {
-    throw e;
+    throw std::runtime_error(std::string("Open file: %s", e.what()));
   }
 }
 
@@ -43,14 +43,14 @@ void SpecGen::setupDecoder()
   }
 }
 
-int SpecGen::decodeAudioFile()
+void SpecGen::decodeAudioFile()
 {
-  if (decoder_->readFile(&data_, &data_size_) != 0)
-  {
-    fprintf(stderr, "Failed to decode file");
-    return -1;
+  try {
+    decoder_->readFile(&data_, &data_size_);
   }
-  return 0;
+  catch(std::exception &e) {
+    throw std::runtime_error(std::string("Audio decoding: %s", e.what()));
+  }
 }
 
 void SpecGen::processSamples()
