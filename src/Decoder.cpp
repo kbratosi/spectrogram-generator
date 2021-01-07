@@ -2,7 +2,8 @@
 
 Decoder::Decoder(const GeneratorConfiguration *cfg):
   IN_FRAME_COUNT(cfg->fft_in_frame_count),
-  DELTA_FRAME(cfg->delta_frame)
+  DELTA_FRAME(cfg->delta_frame),
+  OUT_SAMPLE_RATE(cfg->out_sample_rate)
 {
   audio_stream_index_ = -1;
   av_format_ctx_ = nullptr;
@@ -29,6 +30,7 @@ Decoder::~Decoder()
     av_packet_free(&av_packet_);
 }
 
+// Open audio file and retrieve data from its header
 void Decoder::openFile(const char *file_name) {
   try {
     initFormatContext(file_name);
@@ -39,15 +41,14 @@ void Decoder::openFile(const char *file_name) {
 }
 
 // Initialize fields and structures necessary in decoding process
-// Includes opening audio file and retrieving data from its header
 int Decoder::setup(const char *file_name, const int out_sample_rate)
 {
-  if (initFormatContext(file_name) != 0)
-    return -1;
-
-  if (initCodecContext(file_name) != 0)
-    return -1;
-
+  try {
+    initCodecContext();
+  }
+  catch(std::exception &e) {
+    throw e;
+  }
   if (initSwrContext(out_sample_rate) != 0)
     return -1;
 
@@ -162,7 +163,7 @@ void Decoder::initFormatContext(const char *file_name)
 }
 
 // find and open required codec for file decoding
-int Decoder::initCodecContext(const char *file_name)
+void Decoder::initCodecContext()
 {
   AVCodecParameters *av_codec_params;
   AVCodec *av_codec;
@@ -184,30 +185,25 @@ int Decoder::initCodecContext(const char *file_name)
   }
   if (audio_stream_index_ == -1)
   {
-    fprintf(stderr, "Could not retrieve audio stream from file '%s'\n", file_name);
-    return -1;
+    throw std::runtime_error("Could not retrieve audio stream from file\n");
   }
 
   // find & open codec
   av_codec_ctx_ = avcodec_alloc_context3(av_codec);
   if (!av_codec_ctx_)
   {
-    fprintf(stderr, "Failed to create AVCodecContext");
-    return -1;
+    throw std::runtime_error("Failed to create AVCodecContext");
   }
 
   if (avcodec_parameters_to_context(av_codec_ctx_, av_codec_params) < 0)
   {
-    fprintf(stderr, "Couldn't initialize AVCodecContext\n");
-    return -1;
+    throw std::runtime_error("Couldn't initialize AVCodecContext\n");
   }
 
   if (avcodec_open2(av_codec_ctx_, av_codec, nullptr) < 0)
   {
-    fprintf(stderr, "Couldn't open codec\n");
-    return -1;
+    throw std::runtime_error("Couldn't open codec\n");
   }
-  return 0;
 }
 
 // initialize and setup resampler

@@ -28,12 +28,13 @@ class Decoder
 
   const float IN_FRAME_COUNT;
   const float DELTA_FRAME;
+  const int OUT_SAMPLE_RATE;
 
   const int MONO = 1;
   const int FRAME_ALLOC_UNIT = 4000000;
 
   void initFormatContext(const char *file_name);
-  int initCodecContext(const char *file_name);
+  void initCodecContext();
   int initSwrContext(const int out_sample_rate);
 
   const char *avMakeError(int errnum);
