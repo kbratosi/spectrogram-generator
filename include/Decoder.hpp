@@ -32,7 +32,7 @@ class Decoder
   const int MONO = 1;
   const int FRAME_ALLOC_UNIT = 4000000;
 
-  int initFormatContext(const char *file_name);
+  void initFormatContext(const char *file_name);
   int initCodecContext(const char *file_name);
   int initSwrContext(const int out_sample_rate);
 

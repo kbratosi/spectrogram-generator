@@ -142,28 +142,23 @@ int Decoder::readFile(sample_fmt **data, int *data_size)
 }
 
 // open file using libavcodec, retrieve information from header
-int Decoder::initFormatContext(const char *file_name)
+void Decoder::initFormatContext(const char *file_name)
 {
   av_format_ctx_ = avformat_alloc_context();
-  if (!av_format_ctx_)
-  {
-    fprintf(stderr, "Couldn't create AVFormatContext\n");
-    return -1;
+  if (!av_format_ctx_) {
+    throw std::runtime_error("Couldn't create AVFormatContext\n");
   }
-
   if (avformat_open_input(&av_format_ctx_, file_name, nullptr, nullptr) != 0)
   {
-    fprintf(stderr, "Could not open file '%s'\n", file_name);
-    return -1;
+    std::string error = std::string("Could not open file '%s'\n", file_name);
+    throw std::runtime_error(error);
   }
-
   // retrieve stream information from file header
   if (avformat_find_stream_info(av_format_ctx_, nullptr) < 0)
   {
-    fprintf(stderr, "Could not retrieve stream information from '%s'\n", file_name);
-    return -1;
+    std::string error = std::string("Could not retrieve stream information from '%s'\n", file_name);
+    throw std::runtime_error(error);
   }
-  return 0;
 }
 
 // find and open required codec for file decoding
