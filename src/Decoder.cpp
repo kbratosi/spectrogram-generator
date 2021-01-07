@@ -1,7 +1,8 @@
 #include "Decoder.hpp"
 
 Decoder::Decoder(const GeneratorConfiguration *cfg):
-IN_FRAME_COUNT(cfg->fft_in_frame_count), DELTA_FRAME(cfg->delta_frame)
+  IN_FRAME_COUNT(cfg->fft_in_frame_count),
+  DELTA_FRAME(cfg->delta_frame)
 {
   audio_stream_index_ = -1;
   av_format_ctx_ = nullptr;
@@ -26,6 +27,15 @@ Decoder::~Decoder()
     av_frame_free(&av_frame_);
   if (av_packet_)
     av_packet_free(&av_packet_);
+}
+
+void Decoder::openFile(const char *file_name) {
+  try {
+    initFormatContext(file_name);
+  }
+  catch(std::exception &e) {
+    throw e;
+  }
 }
 
 // Initialize fields and structures necessary in decoding process

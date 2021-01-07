@@ -24,6 +24,15 @@ SpecGen::~SpectrogramGenerator()
   delete picture_;
 }
 
+void SpecGen::openFile(const char *file_name) {
+  try {
+    decoder_->openFile(file_name);
+  }
+  catch(std::exception &e) {
+    throw e;
+  }
+}
+
 int SpecGen::setupDecoder(const char *file_name)
 {
   if (decoder_->setup(file_name, out_sample_rate_) != 0)

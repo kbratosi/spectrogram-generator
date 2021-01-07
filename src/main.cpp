@@ -38,6 +38,14 @@ int main()
 
   SpectrogramGenerator generator(&config);
   std::cout << "Decoder" << std::endl;
+  try {
+    generator.openFile("audio/test20.mp3");
+  }
+  catch(std::exception &e) {
+    std::cerr << e.what() << std::endl;
+    return -1;
+  }
+  
   if (generator.setupDecoder("audio/test20.mp3") != 0)
     return -1;
   if (generator.decodeAudioFile() != 0)

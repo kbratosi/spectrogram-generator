@@ -20,6 +20,8 @@ public:                   // temporary - change later!
 public:
   SpectrogramGenerator(const GeneratorConfiguration *cfg);
   ~SpectrogramGenerator();
+
+  void openFile(const char *file_name);
   int setupDecoder(const char *file_name);
   int decodeAudioFile();
 

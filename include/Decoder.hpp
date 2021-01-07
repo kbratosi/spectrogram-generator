@@ -41,6 +41,7 @@ class Decoder
 public:
   Decoder(const GeneratorConfiguration *cfg);
   ~Decoder();
+  void openFile(const char *file_name);
   int setup(const char *file_name, const int out_sample_rate);
   int readFile(sample_fmt **data, int *data_size);
 };
