@@ -39,8 +39,7 @@ class Decoder
   void initPacket();
   void initFrame();
 
-  //void addPrefix(sample_fmt **data, int *data_size);
-  //void addSuffix(sample_fmt **data, int *data_size);
+  void reallocateData(sample_fmt **data, int new_sample_capacity);
 
   const char *avMakeError(int errnum);
 
@@ -49,7 +48,10 @@ public:
   ~Decoder();
   void openFile(const char *file_name);
   void setup();
+  void allocateMemory(sample_fmt **data);
   void readFile(sample_fmt **data, int *data_size);
+  void addOverlapPrefix(sample_fmt **data, int *data_size);
+  void addOverlapSuffix(sample_fmt **data, int *data_size);
 };
 
 #endif

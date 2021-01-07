@@ -46,7 +46,10 @@ void SpecGen::setupDecoder()
 void SpecGen::decodeAudioFile()
 {
   try {
+    decoder_->allocateMemory(&data_);
+    decoder_->addOverlapPrefix(&data_, &data_size_);
     decoder_->readFile(&data_, &data_size_);
+    decoder_->addOverlapSuffix(&data_, &data_size_);
   }
   catch(std::exception &e) {
     throw std::runtime_error(std::string("Audio decoding: %s", e.what()));
