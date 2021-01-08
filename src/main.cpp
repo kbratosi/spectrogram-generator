@@ -39,7 +39,7 @@ int main()
   SpectrogramGenerator generator(&config);
   std::cout << "Decoder" << std::endl;
   try {
-    generator.openFile("audio/yomama.mp3");
+    generator.openFile("audio/440hz.mp3");
     generator.setupDecoder();
     generator.decodeAudioFile();
   }

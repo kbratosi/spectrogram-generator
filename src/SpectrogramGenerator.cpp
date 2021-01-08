@@ -41,7 +41,8 @@ void SpecGen::setupDecoder()
     decoder_->setup();
   }
   catch(std::exception &e) {
-    throw std::runtime_error(std::string("Decoder setup: %s", e.what()));
+    std::cerr << e.what() << std::endl;
+    throw;
   }
 }
 
@@ -54,7 +55,8 @@ void SpecGen::decodeAudioFile()
     decoder_->addOverlapSuffix(&data_, &data_size_);
   }
   catch(std::exception &e) {
-    throw std::runtime_error(std::string("Audio decoding: %s", e.what()));
+    std::cerr << e.what() << std::endl;
+    throw;
   }
 }
 
