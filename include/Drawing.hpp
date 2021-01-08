@@ -11,7 +11,7 @@ public:
     SpecImage(int height, int width, int inputSam, int numOfCol);
     ~SpecImage();
     bool saveImage(std::string value);
-    int createImage(std::vector<float *> data);
+    int createImage(std::vector<float *> *data);
 
 private:
     cv::Mat *image_, *tempImage_;

@@ -1,4 +1,4 @@
-#include "drawImg.hpp"
+#include "Drawing.hpp"
 
 SpecImage::SpecImage(int height, int width, int inputSam, int numOfCol)
 {
@@ -22,10 +22,10 @@ SpecImage::~SpecImage()
     delete tempImage_;
 }
 
-int SpecImage::createImage(std::vector<float *> data)
+int SpecImage::createImage(std::vector<float *> *data)
 {
     //create images from full windows
-    int numOfImages = data.size() / x_;
+    int numOfImages = data->size() / x_;
     for (int k = 0; k < numOfImages; ++k)
     {
 #pragma omp parallel for
@@ -34,7 +34,7 @@ int SpecImage::createImage(std::vector<float *> data)
             for (int j = 0; j < y_; ++j)
             {
                 cv::Point p(i, j);
-                cv::Scalar colorIn((data[x_ * k + i][j] / 60 + 1) * 65536); //normalize output from 0 to 65536
+                cv::Scalar colorIn((data->at(x_ * k + i)[j] / 60 + 1) * 65536); //normalize output from 0 to 65536
                 cv::line(*tempImage_, p, p, colorIn, 2);
             }
         }
@@ -43,14 +43,15 @@ int SpecImage::createImage(std::vector<float *> data)
     }
 
     //create image from remaining samples
-
+    //clear tempImage
     *tempImage_ = cv::Scalar(0);
-    for (uint i = 0; i < (data.size() - (x_ * numOfImages)); ++i)
+#pragma omp parallel for
+    for (uint i = 0; i < (data->size() - (x_ * numOfImages)); ++i)
     {
         for (int j = 0; j < y_; ++j)
         {
             cv::Point p(i, j);
-            cv::Scalar colorIn((data[x_ * numOfImages + i][j] / 60 + 1) * 65536); //normalize output from 0 to 65536
+            cv::Scalar colorIn((data->at(x_ * numOfImages + i)[j] / 60 + 1) * 65536); //normalize output from 0 to 65536
             cv::line(*tempImage_, p, p, colorIn, 2);
         }
     }
@@ -62,6 +63,6 @@ int SpecImage::createImage(std::vector<float *> data)
 
 bool SpecImage::saveImage(std::string value)
 {
-    cv::resize(*tempImage_, *image_, image_->size(), 0, 0, cv::INTER_CUBIC);
+    cv::resize(*tempImage_, *image_, image_->size());
     return cv::imwrite("./output/Spectrogram" + value + ".png", *image_);
 }

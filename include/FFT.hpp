@@ -21,8 +21,7 @@ public:
     void processSamples(const sample_fmt *data, uint data_size);
     void hanningWindow(const sample_fmt *curr_window_head);
     void runFft();
-
-    std::vector<float *> specBuf;
+    std::vector<float *> *getSpecBuf();
 
 private:
     const uint FFT_INPUT_SAMPLES;
@@ -33,6 +32,7 @@ private:
 
     float *input_window_;
     fftwf_complex *output_buffer_;
+    std::vector<float *> *specBuf;
 };
 
 #endif

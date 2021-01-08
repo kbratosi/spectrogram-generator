@@ -1,6 +1,7 @@
 #include "SpectrogramGenerator.hpp"
 
-SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg) {
+SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg)
+{
   data_ = nullptr;
   data_size_ = 0;
 
@@ -11,9 +12,8 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg) {
   picture_ = new SpecImage(cfg->img_height,
                            cfg->img_width,
                            cfg->fft_in_frame_count,
-                           cfg->fft_per_img           );
+                           cfg->fft_per_img);
 }
-
 
 SpecGen::~SpectrogramGenerator()
 {
@@ -51,5 +51,5 @@ void SpecGen::processSamples()
 
 void SpecGen::plotSpectrogram()
 {
-  picture_->createImage(transformation_->specBuf);
+  picture_->createImage(transformation_->getSpecBuf());
 }

@@ -3,8 +3,8 @@
 
 #include "ConfigReader.hpp"
 #include "Decoder.hpp"
-#include "fft.hpp"
-#include "drawImg.hpp"
+#include "FFT.hpp"
+#include "Drawing.hpp"
 
 typedef class SpectrogramGenerator
 {
@@ -12,10 +12,10 @@ typedef class SpectrogramGenerator
   SpecImage *picture_;
   Fft_samples *transformation_;
 
-public:                   // temporary - change later!
-  sample_fmt *data_;      // array containing raw audio data
-  int data_size_;         // number of samples
-  int out_sample_rate_;   // sampling frequency of decoded file
+public:                 // temporary - change later!
+  sample_fmt *data_;    // array containing raw audio data
+  int data_size_;       // number of samples
+  int out_sample_rate_; // sampling frequency of decoded file
 
 public:
   SpectrogramGenerator(const GeneratorConfiguration *cfg);

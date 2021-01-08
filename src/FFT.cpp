@@ -1,4 +1,4 @@
-#include "fft.hpp"
+#include "FFT.hpp"
 #include <cassert>
 #include <iostream>
 
@@ -12,15 +12,16 @@ Fft_samples::Fft_samples(const GeneratorConfiguration *cfg) : FFT_INPUT_SAMPLES(
   input_window_ = new float[FFT_INPUT_SAMPLES];
   output_buffer_ = new fftwf_complex[FFT_OUTPUT_SAMPLES];
   plan = fftwf_plan_dft_r2c_1d(FFT_INPUT_SAMPLES, input_window_, output_buffer_, FFTW_ESTIMATE);
+  specBuf = new std::vector<float *>();
 }
 
 Fft_samples::~Fft_samples()
 {
   delete[] input_window_;
   delete[] output_buffer_;
-  for (int i = 0; i < specBuf.size(); ++i)
+  for (int i = 0; i < specBuf->size(); ++i)
   {
-    delete[] specBuf[i];
+    delete[] specBuf->at(i);
   }
   fftwf_destroy_plan(plan);
   fftw_cleanup_threads();
@@ -61,5 +62,10 @@ void Fft_samples::runFft()
     tempBuf[i] = 10. / log(10.) * log(pow(output_buffer_[i][0], 2) + pow(output_buffer_[i][1], 2) + 1e-6); //max value - 96dB
   }
 
-  specBuf.push_back(tempBuf);
+  specBuf->push_back(tempBuf);
+}
+
+std::vector<float *> *Fft_samples::getSpecBuf()
+{
+  return specBuf;
 }

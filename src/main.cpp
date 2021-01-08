@@ -1,6 +1,6 @@
 #include "SpectrogramGenerator.hpp"
-#include "fft.hpp"
-#include "drawImg.hpp"
+#include "FFT.hpp"
+#include "Drawing.hpp"
 #include "ConfigReader.hpp"
 #include "Benchmark.hpp"
 
@@ -38,7 +38,7 @@ int main()
 
   SpectrogramGenerator generator(&config);
   std::cout << "Decoder" << std::endl;
-  if (generator.setupDecoder("audio/test20.mp3") != 0)
+  if (generator.setupDecoder("audio/test20B.mp3") != 0)
     return -1;
   if (generator.decodeAudioFile() != 0)
     return -1;
