@@ -12,18 +12,19 @@ typedef class SpectrogramGenerator
   SpecImage *picture_;
   Fft_samples *transformation_;
 
-public:                   // temporary - change later!
   sample_fmt *data_;      // array containing raw audio data
   int data_size_;         // number of samples
-  int out_sample_rate_;   // sampling frequency of decoded file
 
 public:
   SpectrogramGenerator(const GeneratorConfiguration *cfg);
   ~SpectrogramGenerator();
-  int setupDecoder(const char *file_name);
-  int decodeAudioFile();
+
+  void openFile(std::string file_name);
+  void setupDecoder();
+  void decodeAudioFile();
 
   void processSamples();
+  
   void plotSpectrogram();
 } SpecGen;
 
