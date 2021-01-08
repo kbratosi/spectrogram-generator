@@ -33,12 +33,10 @@ Decoder::~Decoder()
 // Open audio file and retrieve data from its header
 void Decoder::openFile(const char *file_name) {
   av_format_ctx_ = avformat_alloc_context();
-  if (!av_format_ctx_) {
+  if (!av_format_ctx_)
     throw std::runtime_error("Error: couldn't create AVFormatContext");
-  }
-  if (avformat_open_input(&av_format_ctx_, file_name, nullptr, nullptr) != 0) {
+  if (avformat_open_input(&av_format_ctx_, file_name, nullptr, nullptr) != 0)
     throw std::runtime_error(std::string("Error: could not open file '%s'", file_name));
-  }
   // retrieve stream information from file header
   if (avformat_find_stream_info(av_format_ctx_, nullptr) < 0) {
     std::string error = std::string("Error: could not retrieve stream information from '%s'", file_name);
@@ -53,6 +51,13 @@ void Decoder::setup()
   initSwrContext();
   initPacket();
   initFrame();
+}
+
+void Decoder::decode(sample_fmt **data, int *data_size) {
+  allocateMemory(data);
+  addOverlapPrefix(data, data_size);
+  readFile(data, data_size);
+  addOverlapSuffix(data, data_size);
 }
 
 // allocate memory prior to reading file contents
@@ -96,7 +101,7 @@ void Decoder::readFile(sample_fmt **data, int *data_size)
     // reallocate memory when data array is too small to append a new buffer
     if(*data_size + frame_count > data_capacity) {
       data_capacity += FRAME_ALLOC_UNIT;
-      reallocateData(data, data_capacity);
+      reallocateMemory(data, data_capacity);
     }
     // append resampled frames to data
     memcpy(*data + *data_size, buffer, frame_count * sizeof(sample_fmt));
@@ -189,12 +194,12 @@ void Decoder::addOverlapSuffix(sample_fmt **data, int *data_size) {
   int data_capacity = *data_size / DELTA_FRAME; 
   data_capacity *= DELTA_FRAME;
   data_capacity += IN_FRAME_COUNT;
-  reallocateData(data, data_capacity);
+  reallocateMemory(data, data_capacity);
   memset(*data + *data_size, 0, (data_capacity - *data_size) * sizeof(sample_fmt));
   *data_size = data_capacity;
 }
 
-void Decoder::reallocateData(sample_fmt **data, int new_sample_capacity) {
+void Decoder::reallocateMemory(sample_fmt **data, int new_sample_capacity) {
   *data = (sample_fmt *)realloc(*data, new_sample_capacity * sizeof(sample_fmt));
   if(!*data) 
     throw std::runtime_error("Error: couldn't allocate memory");

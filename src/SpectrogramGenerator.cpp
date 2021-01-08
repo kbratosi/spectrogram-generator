@@ -25,39 +25,17 @@ SpecGen::~SpectrogramGenerator()
 }
 
 void SpecGen::openFile(const char *file_name) {
-  try {
-    decoder_->openFile(file_name);
-  }
-  catch(std::exception &e) {
-    std::cerr << e.what() << std::endl;
-    throw;
-  }
+  decoder_->openFile(file_name);
 }
 
 void SpecGen::setupDecoder()
 {
-  try {
-    std::cout << "Setup" << std::endl;
-    decoder_->setup();
-  }
-  catch(std::exception &e) {
-    std::cerr << e.what() << std::endl;
-    throw;
-  }
+  decoder_->setup();
 }
 
 void SpecGen::decodeAudioFile()
 {
-  try {
-    decoder_->allocateMemory(&data_);
-    decoder_->addOverlapPrefix(&data_, &data_size_);
-    decoder_->readFile(&data_, &data_size_);
-    decoder_->addOverlapSuffix(&data_, &data_size_);
-  }
-  catch(std::exception &e) {
-    std::cerr << e.what() << std::endl;
-    throw;
-  }
+  decoder_->decode(&data_, &data_size_);
 }
 
 void SpecGen::processSamples()

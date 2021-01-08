@@ -5,10 +5,10 @@ out_sample_rate = 48000
 fft_input_time_window = 77.3
 
 # spectrogram overlapping
-fft_overlapping = 0.6
+fft_overlapping = 0.5
 
 # number of FFT's in a single image (horizontal axis)
-fft_per_img = 1000
+fft_per_img = 500
 
 # output spectrogram image dimensions
 img_width = 1024
