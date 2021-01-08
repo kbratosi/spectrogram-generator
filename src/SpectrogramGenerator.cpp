@@ -22,7 +22,8 @@ SpecGen::~SpectrogramGenerator()
   delete picture_;
 }
 
-void SpecGen::openFile(const char *file_name) 
+// decoder
+void SpecGen::openFile(std::string file_name) 
 {
   decoder_->openFile(file_name);
 }
@@ -37,11 +38,13 @@ void SpecGen::decodeAudioFile()
   decoder_->decode(&data_, &data_size_);
 }
 
+// fft
 void SpecGen::processSamples()
 {
   transformation_->processSamples(data_, data_size_);
 }
 
+// visualization
 void SpecGen::plotSpectrogram()
 {
   picture_->createImage(transformation_->specBuf);

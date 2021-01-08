@@ -19,11 +19,12 @@ public:
   SpectrogramGenerator(const GeneratorConfiguration *cfg);
   ~SpectrogramGenerator();
 
-  void openFile(const char *file_name);
+  void openFile(std::string file_name);
   void setupDecoder();
   void decodeAudioFile();
 
   void processSamples();
+  
   void plotSpectrogram();
 } SpecGen;
 
