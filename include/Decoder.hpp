@@ -33,7 +33,6 @@ class Decoder
   const int MONO = 1;
   const int FRAME_ALLOC_UNIT = 4000000;
 
-  void initFormatContext(const char *file_name);
   void initCodecContext();
   void initSwrContext();
   void initPacket();
@@ -50,8 +49,11 @@ class Decoder
 public:
   Decoder(const GeneratorConfiguration *cfg);
   ~Decoder();
+  // open audio file and retrieve information from its header
   void openFile(const char *file_name);
+  // initialize fields and structures necessary in decoding process
   void setup();
+  // retrieve audio data from file, prepare data stream for fft transforms
   void decode(sample_fmt **data, int *data_size);
 };
 

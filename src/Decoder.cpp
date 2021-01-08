@@ -30,7 +30,7 @@ Decoder::~Decoder()
     av_packet_free(&av_packet_);
 }
 
-// Open audio file and retrieve data from its header
+// open audio file and retrieve data from its header
 void Decoder::openFile(const char *file_name) {
   av_format_ctx_ = avformat_alloc_context();
   if (!av_format_ctx_)
@@ -44,7 +44,7 @@ void Decoder::openFile(const char *file_name) {
   }
 }
 
-// Initialize fields and structures necessary in decoding process
+// initialize fields and structures necessary in decoding process
 void Decoder::setup()
 {
   initCodecContext();
@@ -53,11 +53,80 @@ void Decoder::setup()
   initFrame();
 }
 
+// retrieve audio data from file, prepare data stream for fft transforms
+// audio stream is saved in data, number of frames is stored in data_size
 void Decoder::decode(sample_fmt **data, int *data_size) {
   allocateMemory(data);
   addOverlapPrefix(data, data_size);
   readFile(data, data_size);
   addOverlapSuffix(data, data_size);
+}
+
+// // // // //
+
+// find and open required codec for file decoding
+void Decoder::initCodecContext()
+{
+  AVCodecParameters *av_codec_params;
+  AVCodec *av_codec;
+
+  // find stream containing audio packets, save its index
+  for (uint i = 0; i < av_format_ctx_->nb_streams; ++i)
+  {
+    av_codec_params = av_format_ctx_->streams[i]->codecpar;
+    av_codec = avcodec_find_decoder(av_codec_params->codec_id);
+    if (!av_codec)
+      continue;
+    if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
+    {
+      audio_stream_index_ = i;
+      break;
+    }
+  }
+  if (audio_stream_index_ == -1)
+    throw std::runtime_error("Error: could not retrieve audio stream from file");
+
+  // find & open codec
+  av_codec_ctx_ = avcodec_alloc_context3(av_codec);
+  if (!av_codec_ctx_)
+    throw std::runtime_error("Error: failed to create AVCodecContext");
+  if (avcodec_parameters_to_context(av_codec_ctx_, av_codec_params) < 0)
+    throw std::runtime_error("Error: couldn't initialize AVCodecContext");
+  if (avcodec_open2(av_codec_ctx_, av_codec, nullptr) < 0)
+    throw std::runtime_error("Error: couldn't open codec");
+}
+
+// setup and initialize resampler
+void Decoder::initSwrContext()
+{
+  swr_ = swr_alloc();
+  
+  av_opt_set_int(swr_, "in_channel_count", av_codec_ctx_->channels, 0);
+  av_opt_set_int(swr_, "out_channel_count", 1, 0);
+  av_opt_set_int(swr_, "in_channel_layout", av_codec_ctx_->channel_layout, 0);
+  av_opt_set_int(swr_, "out_channel_layout", AV_CH_LAYOUT_MONO, 0);
+  av_opt_set_int(swr_, "in_sample_rate", av_codec_ctx_->sample_rate, 0);
+  av_opt_set_int(swr_, "out_sample_rate", OUT_SAMPLE_RATE, 0);
+  av_opt_set_sample_fmt(swr_, "in_sample_fmt", av_codec_ctx_->sample_fmt, 0);
+  av_opt_set_sample_fmt(swr_, "out_sample_fmt", AV_SAMPLE_FMT_FLT, 0);
+  
+  swr_init(swr_);
+  if (!swr_is_initialized(swr_))
+    throw std::runtime_error("Error: resampler has not been properly initialized");
+}
+
+// initialize packet structure
+void Decoder::initPacket() {
+  av_packet_ = av_packet_alloc();
+  if (!av_packet_)
+    throw std::runtime_error("Error allocating AVPacket");
+}
+
+// initialize frame structure
+void Decoder::initFrame() {
+  av_frame_ = av_frame_alloc();
+  if (!av_frame_)
+    throw std::runtime_error("Error allocating AVFrame");
 }
 
 // allocate memory prior to reading file contents
@@ -67,6 +136,8 @@ void Decoder::allocateMemory(sample_fmt **data) {
     throw std::runtime_error("Error: couldn't allocate memory");
 }
 
+// read audio file and decode it
+// raw audio is saved to data, number of frames is stored in data_size 
 void Decoder::readFile(sample_fmt **data, int *data_size)
 {
   int frame_count = 0;
@@ -113,75 +184,6 @@ void Decoder::readFile(sample_fmt **data, int *data_size)
   }
 }
 
-// find and open required codec for file decoding
-void Decoder::initCodecContext()
-{
-  AVCodecParameters *av_codec_params;
-  AVCodec *av_codec;
-
-  // find stream containing audio packets, save its index
-  for (uint i = 0; i < av_format_ctx_->nb_streams; ++i)
-  {
-    av_codec_params = av_format_ctx_->streams[i]->codecpar;
-    av_codec = avcodec_find_decoder(av_codec_params->codec_id);
-    if (!av_codec)
-      continue;
-    if (av_codec_params->codec_type == AVMEDIA_TYPE_AUDIO)
-    {
-      audio_stream_index_ = i;
-      break;
-    }
-  }
-  if (audio_stream_index_ == -1)
-    throw std::runtime_error("Error: could not retrieve audio stream from file");
-
-  // find & open codec
-  av_codec_ctx_ = avcodec_alloc_context3(av_codec);
-  if (!av_codec_ctx_) {
-    throw std::runtime_error("Error: failed to create AVCodecContext");
-  }
-  if (avcodec_parameters_to_context(av_codec_ctx_, av_codec_params) < 0) {
-    throw std::runtime_error("Error: couldn't initialize AVCodecContext");
-  }
-  if (avcodec_open2(av_codec_ctx_, av_codec, nullptr) < 0) {
-    throw std::runtime_error("Error: couldn't open codec");
-  }
-}
-
-// initialize and setup resampler
-void Decoder::initSwrContext()
-{
-  swr_ = swr_alloc();
-  
-  av_opt_set_int(swr_, "in_channel_count", av_codec_ctx_->channels, 0);
-  av_opt_set_int(swr_, "out_channel_count", 1, 0);
-  av_opt_set_int(swr_, "in_channel_layout", av_codec_ctx_->channel_layout, 0);
-  av_opt_set_int(swr_, "out_channel_layout", AV_CH_LAYOUT_MONO, 0);
-  av_opt_set_int(swr_, "in_sample_rate", av_codec_ctx_->sample_rate, 0);
-  av_opt_set_int(swr_, "out_sample_rate", OUT_SAMPLE_RATE, 0);
-  av_opt_set_sample_fmt(swr_, "in_sample_fmt", av_codec_ctx_->sample_fmt, 0);
-  av_opt_set_sample_fmt(swr_, "out_sample_fmt", AV_SAMPLE_FMT_FLT, 0);
-  
-  swr_init(swr_);
-  if (!swr_is_initialized(swr_)) {
-    throw std::runtime_error("Error: resampler has not been properly initialized");
-  }
-}
-
-void Decoder::initPacket() {
-  av_packet_ = av_packet_alloc();
-  if (!av_packet_) {
-    throw std::runtime_error("Error allocating AVPacket");
-  }
-}
-
-void Decoder::initFrame() {
-  av_frame_ = av_frame_alloc();
-  if (!av_frame_) {
-    throw std::runtime_error("Error allocating AVFrame");
-  }
-}
-
 // append overlap 0's for first FFT input window
 void Decoder::addOverlapPrefix(sample_fmt **data, int *data_size) {
   int frame_count = IN_FRAME_COUNT - DELTA_FRAME;
@@ -199,6 +201,7 @@ void Decoder::addOverlapSuffix(sample_fmt **data, int *data_size) {
   *data_size = data_capacity;
 }
 
+// allocate more memory for raw audio frames storage
 void Decoder::reallocateMemory(sample_fmt **data, int new_sample_capacity) {
   *data = (sample_fmt *)realloc(*data, new_sample_capacity * sizeof(sample_fmt));
   if(!*data) 

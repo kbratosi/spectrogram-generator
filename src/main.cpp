@@ -40,7 +40,7 @@ int main()
 
   std::cout << "Decoder" << std::endl;
   try {
-    generator.openFile("audio/surprise.mp3");
+    generator.openFile("audio/yomama.mp3");
     generator.setupDecoder();
     generator.decodeAudioFile();
   }

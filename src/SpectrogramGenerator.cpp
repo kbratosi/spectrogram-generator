@@ -4,8 +4,6 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg) {
   data_ = nullptr;
   data_size_ = 0;
 
-  out_sample_rate_ = cfg->out_sample_rate;
-
   decoder_ = new Decoder(cfg);
   transformation_ = new Fft_samples(cfg);
   picture_ = new SpecImage(cfg->img_height,
@@ -24,7 +22,8 @@ SpecGen::~SpectrogramGenerator()
   delete picture_;
 }
 
-void SpecGen::openFile(const char *file_name) {
+void SpecGen::openFile(const char *file_name) 
+{
   decoder_->openFile(file_name);
 }
 
