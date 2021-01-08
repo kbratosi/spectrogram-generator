@@ -39,12 +39,12 @@ int main()
   SpectrogramGenerator generator(&config);
   std::cout << "Decoder" << std::endl;
   try {
-    generator.openFile("audio/test20.mp3");
+    generator.openFile("audio/yomama.mp3");
     generator.setupDecoder();
     generator.decodeAudioFile();
   }
   catch(std::exception &e) {
-    std::cerr << "Error: " << e.what() << std::endl;
+    std::cerr << "Error occurred - shutting down..." << std::endl;
     return -1;
   }
 

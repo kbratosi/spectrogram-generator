@@ -29,13 +29,15 @@ void SpecGen::openFile(const char *file_name) {
     decoder_->openFile(file_name);
   }
   catch(std::exception &e) {
-    throw std::runtime_error(std::string("Open file: %s", e.what()));
+    std::cerr << e.what() << std::endl;
+    throw;
   }
 }
 
 void SpecGen::setupDecoder()
 {
   try {
+    std::cout << "Setup" << std::endl;
     decoder_->setup();
   }
   catch(std::exception &e) {

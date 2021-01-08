@@ -32,11 +32,17 @@ Decoder::~Decoder()
 
 // Open audio file and retrieve data from its header
 void Decoder::openFile(const char *file_name) {
-  try {
-    initFormatContext(file_name);
+  av_format_ctx_ = avformat_alloc_context();
+  if (!av_format_ctx_) {
+    throw std::runtime_error("Couldn't create AVFormatContext\n");
   }
-  catch(std::exception &e) {
-    throw e;
+  if (avformat_open_input(&av_format_ctx_, file_name, nullptr, nullptr) != 0) {
+    throw std::runtime_error(std::string("Could not open file '%s'\n", file_name));
+  }
+  // retrieve stream information from file header
+  if (avformat_find_stream_info(av_format_ctx_, nullptr) < 0) {
+    std::string error = std::string("Could not retrieve stream information from '%s'\n", file_name);
+    throw std::runtime_error(error);
   }
 }
 
@@ -54,6 +60,7 @@ void Decoder::setup()
   }
 }
 
+// allocate memory prior to 
 void Decoder::allocateMemory(sample_fmt **data) {
   *data = (sample_fmt *)malloc(FRAME_ALLOC_UNIT * sizeof(sample_fmt));
   if(!*data) 
@@ -111,23 +118,6 @@ void Decoder::readFile(sample_fmt **data, int *data_size)
   }
   catch(std::exception &e) {
     throw e;
-  }
-}
-
-// open file using libavcodec, retrieve information from header
-void Decoder::initFormatContext(const char *file_name)
-{
-  av_format_ctx_ = avformat_alloc_context();
-  if (!av_format_ctx_) {
-    throw std::runtime_error("Couldn't create AVFormatContext\n");
-  }
-  if (avformat_open_input(&av_format_ctx_, file_name, nullptr, nullptr) != 0) {
-    throw std::runtime_error(std::string("Could not open file '%s'\n", file_name));
-  }
-  // retrieve stream information from file header
-  if (avformat_find_stream_info(av_format_ctx_, nullptr) < 0) {
-    std::string error = std::string("Could not retrieve stream information from '%s'\n", file_name);
-    throw std::runtime_error(error);
   }
 }
 
