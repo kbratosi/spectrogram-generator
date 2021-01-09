@@ -19,13 +19,12 @@ Fft_samples::~Fft_samples()
 {
   delete[] input_window_;
   delete[] output_buffer_;
-  for (int i = 0; i < specBuf->size(); ++i)
+  for (uint i = 0; i < specBuf->size(); ++i)
   {
     delete[] specBuf->at(i);
   }
   fftwf_destroy_plan(plan);
   fftw_cleanup_threads();
-  //fftw_cleanup();
 }
 
 void Fft_samples::processSamples(const sample_fmt *data, uint data_size)
@@ -44,7 +43,6 @@ void Fft_samples::hanningWindow(const sample_fmt *curr_window_head)
   for (uint i = 0; i < FFT_INPUT_SAMPLES; ++i)
   {
     input_window_[i] = *(curr_window_head + i);
-    // windowedBuf[i] *= 0.54f - 0.46f * cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1));
     input_window_[i] *= 0.5f * (1 - cosf((M_PI * 2.f * i) / (FFT_INPUT_SAMPLES - 1)));
   }
 }
@@ -59,7 +57,7 @@ void Fft_samples::runFft()
   {
     output_buffer_[i][0] *= (2. / FFT_INPUT_SAMPLES);
     output_buffer_[i][1] *= (2. / FFT_INPUT_SAMPLES);
-    tempBuf[i] = 10. / log(10.) * log(pow(output_buffer_[i][0], 2) + pow(output_buffer_[i][1], 2) + 1e-6); //max value - 96dB
+    tempBuf[i] = 10. / log(10.) * log(pow(output_buffer_[i][0], 2) + pow(output_buffer_[i][1], 2) + 1e-6); //max value - 60dB
   }
 
   specBuf->push_back(tempBuf);

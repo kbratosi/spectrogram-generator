@@ -7,12 +7,15 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg)
 
   out_sample_rate_ = cfg->out_sample_rate;
 
+  float freqOnPx = 1.0f / (cfg->fft_input_time_window / 1000);
+
   decoder_ = new Decoder(cfg);
   transformation_ = new Fft_samples(cfg);
   picture_ = new SpecImage(cfg->img_height,
                            cfg->img_width,
                            cfg->fft_in_frame_count,
-                           cfg->fft_per_img);
+                           cfg->fft_per_img,
+                           freqOnPx);
 }
 
 SpecGen::~SpectrogramGenerator()
