@@ -1,17 +1,21 @@
 #include "Drawing.hpp"
 
-SpecImage::SpecImage(int height, int width, int inputSam, int numOfCol, float freqOnPx)
+SpecImage::SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, float timePerImg)
 {
     y_ = inputSam / 2 + 1; //transform to numer of output samples
     x_ = numOfCol;         // num of columns on image
-    freqOnPx_ = freqOnPx;
+    samplingRate_ = samplingRate / 2;
     imgResolution[0] = width;
     imgResolution[1] = height;
+    timePerImg_ = timePerImg;
+    scaleTime = 0;
 
+    //output image
     image_ = new cv::Mat(height, width, CV_16UC1, cv::Scalar(0));
-    //create image based on original data and then scale it
+    //create temporary image based on original data and then scale it
     tempImage_ = new cv::Mat(y_, x_, CV_16UC1, cv::Scalar(0));
 
+    //TODO correct handling errors
     if (image_->empty() || tempImage_->empty())
     {
         std::cout << "\n Error - image not created\n";
@@ -67,23 +71,28 @@ int SpecImage::createImage(std::vector<float *> *data)
 bool SpecImage::saveImage(std::string value)
 {
     cv::resize(*tempImage_, *image_, image_->size());
-    addBorder();
+    drawScale(value);
     return cv::imwrite("./output/Spectrogram" + value + ".png", *image_);
 }
 
 void SpecImage::addBorder()
 {
-    int top = (int)(0.02 * image_->rows);
-    int left = (int)(0.015 * image_->cols);
+    //init width and height of borders + color
+    //int top = (int)(0.02 * image_->rows);
+    //int left = (int)(0.015 * image_->cols);
+    int top = 18, left = 25;
     cv::Scalar background(0);
 
     cv::copyMakeBorder(*image_, *image_, top, 0, left, 0, cv::BORDER_CONSTANT, background);
-    drawScale();
 }
 
-void SpecImage::drawScale()
+void SpecImage::drawScale(std::string value)
 {
-    int point0[2] = {0.015 * image_->cols, 0.02 * image_->rows};
+    addBorder();
+
+    //set point from which begins spectrogram
+    //int point0[2] = {0.015 * image_->cols, 0.02 * image_->rows};
+    int point0[2] = {25, 18};
 
     cv::Point beginH(0, point0[1] - 1);
     cv::Point endH(image_->cols, point0[1] - 1);
@@ -91,15 +100,28 @@ void SpecImage::drawScale()
     cv::Point endV(point0[0] - 1, image_->rows);
     cv::Scalar colorIn(65000);
 
+    //draw number lines
     cv::line(*image_, beginH, endH, colorIn, 1);
     cv::line(*image_, beginV, endV, colorIn, 1);
 
-    //for (int i = point0[0]; i < image_->cols; i+=20)
-    int step = image_->rows / 20;
-
-    float freqOnImPx = (freqOnPx_ * (y_ / imgResolution[1]));
-    for (int i = point0[1]; i < image_->rows; i += step)
+    // OY
+    //set to draw scale every 1 kHz
+    int stepY = (1000 * image_->rows) / samplingRate_;
+#pragma omp parallel for
+    for (int i = point0[1]; i < image_->rows; i += stepY)
     {
-        cv::putText(*image_, std::to_string(int((i - point0[1]) * freqOnImPx)), cv::Point(0, i), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
+        cv::putText(*image_, std::to_string(((i - point0[1]) / stepY) * 1000), cv::Point(0, i), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
+    }
+
+    //OX
+    //set to draw scale every 5 seconds
+    int stepX = (5 * image_->cols) / timePerImg_;
+    int howManyValues = image_->cols / stepX;
+    int remainingFft = image_->cols - stepX * howManyValues;
+    int numOfImg = std::stoi(value);
+
+    for (int i = ((numOfImg * remainingFft) % stepX) + point0[0]; i < image_->cols; i += stepX, ++scaleTime)
+    {
+        cv::putText(*image_, std::to_string(5 * scaleTime), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
     }
 }

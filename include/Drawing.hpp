@@ -8,18 +8,18 @@
 class SpecImage
 {
 public:
-    SpecImage(int height, int width, int inputSam, int numOfCol, float freqOnPx);
+    SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, float timePerImg);
     ~SpecImage();
     bool saveImage(std::string value);
     int createImage(std::vector<float *> *data);
     void addBorder();
-    void drawScale();
+    void drawScale(std::string value);
 
 private:
     cv::Mat *image_, *tempImage_;
-    int x_, y_;
+    int x_, y_, scaleTime, samplingRate_;
     int imgResolution[2];
-    float freqOnPx_;
+    float timePerImg_;
 };
 
 #endif
