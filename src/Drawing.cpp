@@ -5,8 +5,6 @@ SpecImage::SpecImage(int height, int width, int inputSam, int numOfCol, int samp
     y_ = inputSam / 2 + 1; //transform to numer of output samples
     x_ = numOfCol;         // num of columns on image
     samplingRate_ = samplingRate / 2;
-    imgResolution[0] = width;
-    imgResolution[1] = height;
     timePerImg_ = timePerImg;
     scaleTime = 0;
 

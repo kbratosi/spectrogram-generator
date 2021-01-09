@@ -18,7 +18,6 @@ public:
 private:
     cv::Mat *image_, *tempImage_;
     int x_, y_, scaleTime, samplingRate_;
-    int imgResolution[2];
     float timePerImg_;
 };
 
