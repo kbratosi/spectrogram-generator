@@ -1,5 +1,5 @@
 #include "SpectrogramGenerator.hpp"
-#include "FFT.hpp"
+#include "DataComputer.hpp"
 #include "Drawing.hpp"
 #include "GeneratorConfiguration.hpp"
 #include "Benchmark.hpp"

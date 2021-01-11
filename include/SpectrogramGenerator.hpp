@@ -5,12 +5,14 @@
 #include "Decoder.hpp"
 #include "FFT.hpp"
 #include "ImageGenerator.hpp"
+#include "DataComputer.hpp"
+#include "Drawing.hpp"
 
 typedef class SpectrogramGenerator
 {
   Decoder *decoder_;
   ImageGenerator *picture_;
-  Fft_samples *transformation_;
+  DataComputer *transformation_;
 
   sample_fmt *data_; // array containing raw audio data
   int data_size_;    // number of samples

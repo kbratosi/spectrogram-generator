@@ -8,8 +8,8 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg)
   //float timePerImg = (1 - cfg->fft_overlap_) * cfg->img_fft_per_img_ / 1000 * cfg->fft_input_time_window_;
 
   decoder_ = new Decoder(cfg);
-  transformation_ = new Fft_samples(cfg);
   picture_ = new ImageGenerator(cfg);
+  transformation_ = new DataComputer(cfg);
 }
 
 SpecGen::~SpectrogramGenerator()
