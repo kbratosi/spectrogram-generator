@@ -16,7 +16,7 @@ public:
     void drawScale(std::string value);
 
 private:
-    cv::Mat *image_, *tempImage_;
+    cv::Mat *image_, *outputImage_, *tempImage_;
     /*
     x_ - width of image create from FFT transformation
     y_ - height --- || --- || --- || --- 
