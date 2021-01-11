@@ -3,13 +3,13 @@
 
 #include "GeneratorConfiguration.hpp"
 #include "Decoder.hpp"
+#include "ImageGenerator.hpp"
 #include "DataComputer.hpp"
-#include "Drawing.hpp"
 
 typedef class SpectrogramGenerator
 {
   Decoder *decoder_;
-  SpecImage *picture_;
+  ImageGenerator *picture_;
   DataComputer *transformation_;
 
   sample_fmt *data_; // array containing raw audio data

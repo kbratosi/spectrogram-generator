@@ -1,14 +1,14 @@
 #include "SpectrogramGenerator.hpp"
 #include "DataComputer.hpp"
-#include "Drawing.hpp"
 #include "GeneratorConfiguration.hpp"
 #include "Benchmark.hpp"
 
 #include <iostream>
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-  if(argv[1] == nullptr || argc > 2) {
+  if (argv[1] == nullptr || argc > 2)
+  {
     std::cerr << "Wrong number of parameters" << std::endl;
     std::cout << "Usage: ./run.sh <path_to_file>" << std::endl;
     return -1;
@@ -32,7 +32,6 @@ int main(int argc, char* argv[])
   // validate parameters!
 
   SpectrogramGenerator generator(&config);
-
 
   std::cout << "Decoder" << std::endl;
   try
