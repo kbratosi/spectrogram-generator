@@ -15,9 +15,9 @@ extern "C"
 
 typedef float sample_fmt; // sample format - bit depth & int/float coding
 
-/* Class used for opening an encoded audio file, retrieving information about its contents,
- * decoding encoded audio packets to raw data and saving it to a specified buffer.
- * Uses libav.                                                                              */
+/// Class used for opening an encoded audio file, retrieving information about its contents,
+/// * decoding encoded audio packets to raw data and saving it to a specified buffer.
+/// * Uses libav
 class Decoder
 {
   AVFormatContext *av_format_ctx_; // file information
@@ -48,16 +48,21 @@ class Decoder
   const char *avMakeError(int errnum);
 
 public:
+  ///@param cfg structure holding parameters required during spectrogram generation process
+  ///@see GeneratorConfiguration
   Decoder(const GeneratorConfiguration *cfg);
   ~Decoder();
 
-  // open audio file and retrieve information from its header
+  /// open audio file and retrieve information from its header
   void openFile(std::string file_name);
 
-  // initialize fields and structures necessary in decoding process
+  /// initialize fields and structures necessary in decoding process
   void setup();
 
-  // retrieve audio data from file, prepare data stream for fft transforms
+  /// retrieve audio data from file, prepare data stream for fft transforms
+  ///
+  ///@param data_size pointer to field number of samples
+  ///@param data pointer to array storing raw audio signal
   void decode(sample_fmt **data, int *data_size);
 };
 
