@@ -1,6 +1,6 @@
 #include "SpectrogramGenerator.hpp"
-#include "fft.hpp"
-#include "drawImg.hpp"
+#include "FFT.hpp"
+#include "Drawing.hpp"
 #include "ConfigReader.hpp"
 #include "Benchmark.hpp"
 
@@ -39,12 +39,14 @@ int main()
   SpectrogramGenerator generator(&config);
 
   std::cout << "Decoder" << std::endl;
-  try {
+  try
+  {
     generator.openFile("audio/jazz.mp3");
     generator.setupDecoder();
     generator.decodeAudioFile();
   }
-  catch(std::exception &e) {
+  catch (std::exception &e)
+  {
     std::cerr << e.what() << std::endl
               << "Shutting down..." << std::endl;
     return -1;

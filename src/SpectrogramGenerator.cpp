@@ -1,17 +1,21 @@
 #include "SpectrogramGenerator.hpp"
 
-SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg) {
+SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg)
+{
   data_ = nullptr;
   data_size_ = 0;
+
+  float timePerImg = (1 - cfg->fft_overlapping) * cfg->fft_per_img / 1000 * cfg->fft_input_time_window;
 
   decoder_ = new Decoder(cfg);
   transformation_ = new Fft_samples(cfg);
   picture_ = new SpecImage(cfg->img_height,
                            cfg->img_width,
                            cfg->fft_in_frame_count,
-                           cfg->fft_per_img           );
+                           cfg->fft_per_img,
+                           cfg->out_sample_rate,
+                           timePerImg);
 }
-
 
 SpecGen::~SpectrogramGenerator()
 {
@@ -23,7 +27,7 @@ SpecGen::~SpectrogramGenerator()
 }
 
 // decoder
-void SpecGen::openFile(std::string file_name) 
+void SpecGen::openFile(std::string file_name)
 {
   decoder_->openFile(file_name);
 }
@@ -47,5 +51,5 @@ void SpecGen::processSamples()
 // visualization
 void SpecGen::plotSpectrogram()
 {
-  picture_->createImage(transformation_->specBuf);
+  picture_->createImage(transformation_->getSpecBuf());
 }
