@@ -1,7 +1,7 @@
 #ifndef FFT_HPP
 #define FFT_HPP
 
-#include "ConfigReader.hpp"
+#include "GeneratorConfiguration.hpp"
 #include "Decoder.hpp"
 
 #include <vector>

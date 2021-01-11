@@ -1,8 +1,8 @@
 #include "Decoder.hpp"
 
-Decoder::Decoder(const GeneratorConfiguration *cfg) : IN_FRAME_COUNT(cfg->fft_in_frame_count),
-                                                      DELTA_FRAME(cfg->delta_frame),
-                                                      OUT_SAMPLE_RATE(cfg->out_sample_rate)
+Decoder::Decoder(const GeneratorConfiguration *cfg) : IN_FRAME_COUNT(cfg->fft_in_frame_count_),
+                                                      DELTA_FRAME(cfg->fft_delta_frame_),
+                                                      OUT_SAMPLE_RATE(cfg->out_sample_rate_)
 {
   audio_stream_index_ = -1;
   av_format_ctx_ = nullptr;
