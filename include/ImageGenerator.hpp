@@ -1,7 +1,7 @@
 #ifndef IMAGEGENERATOR_HPP
 #define IMAGEGENERATOR_HPP
 
-#include "ConfigReader.hpp"
+#include "GeneratorConfiguration.hpp"
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -10,7 +10,7 @@
 class ImageGenerator
 {
 public:
-    ImageGenerator(const GeneratorConfiguration *cfg;
+    ImageGenerator(const GeneratorConfiguration *cfg);
     ~ImageGenerator();
 
     bool saveImage(std::string value);
@@ -27,7 +27,7 @@ private:
     timePerImg_ - calculated time in ms displayed on one image
     timeI
     */
-    int x_, y_, scaleTime, samplingRate_, timePerImg_, scale_time_interval_;
+    int x_, y_, scale_time_, sample_rate_, time_per_img_, scale_time_interval_;
 };
 
 #endif

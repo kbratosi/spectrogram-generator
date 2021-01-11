@@ -4,12 +4,12 @@
 #include "GeneratorConfiguration.hpp"
 #include "Decoder.hpp"
 #include "FFT.hpp"
-#include "Drawing.hpp"
+#include "ImageGenerator.hpp"
 
 typedef class SpectrogramGenerator
 {
   Decoder *decoder_;
-  SpecImage *picture_;
+  ImageGenerator *picture_;
   Fft_samples *transformation_;
 
   sample_fmt *data_; // array containing raw audio data

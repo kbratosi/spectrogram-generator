@@ -2,16 +2,16 @@
 
 ImageGenerator::ImageGenerator(const GeneratorConfiguration *cfg)
 {
-    y_ = cfg->fft_out_frame_count;
-    x_ = cfg->fft_per_img;
+    y_ = cfg->fft_out_frame_count_;
+    x_ = cfg->img_fft_per_img_;
 
-    samplingRate_ = cfg->out_sample_rate / 2;
-    //timePerImg_ = timePerImg;
-    //timeInterval_ = cfg->img_scale_time_interval;
-    scaleTime = 0;
+    sample_rate_ = cfg->out_sample_rate_ / 2;
+    time_per_img_ = cfg->img_time_per_img_;
+    scale_time_interval_ = cfg->img_scale_time_interval_;
+    scale_time_ = 0;
 
     //output image with declared by user resolution
-    image_ = new cv::Mat(height, width, CV_16UC1, cv::Scalar(0));
+    image_ = new cv::Mat(cfg->img_height_, cfg->img_width_, CV_16UC1, cv::Scalar(0));
 
     //output image after adding scale lines
     outputImage_ = new cv::Mat();
@@ -107,9 +107,10 @@ void ImageGenerator::drawScale(std::string value)
     cv::Scalar colorIn(65000);
 
     // OY
+    //add axis describtion
     cv::putText(*outputImage_, "Hz", cv::Point(outputImage_->cols - point0[0] + 6, point0[1] + 10), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1.5);
     //set to draw scale every 1 kHz
-    int stepY = (1000 * outputImage_->rows) / samplingRate_;
+    int stepY = (1000 * outputImage_->rows) / sample_rate_;
 
 #pragma omp parallel for
     for (int i = point0[1] + stepY; i < outputImage_->rows; i += stepY)
@@ -120,19 +121,21 @@ void ImageGenerator::drawScale(std::string value)
     }
 
     //OX
-    //set to draw scale every 5 seconds - calculate step
-    int stepX = (timeInterval_ * outputImage_->cols) / timePerImg_;
+    //add axis describtion
+    cv::putText(*outputImage_, "ms", cv::Point(outputImage_->cols - point0[0] + 4, point0[1] - 6), cv::FONT_HERSHEY_DUPLEX, 0.4, colorIn, 1);
+    //calculate step to draw scale with declared interval
+    int stepX = (scale_time_interval_ * outputImage_->cols) / time_per_img_;
     //calculate how many values program can draw
     int howManyValues = outputImage_->cols / stepX;
     //calculate how many FFT remain
     int remainingFft = outputImage_->cols - stepX * howManyValues;
     int numOfImg = std::stoi(value);
 
-    for (int i = ((numOfImg * remainingFft) % stepX); i < outputImage_->cols; i += stepX, ++scaleTime)
+    for (int i = ((numOfImg * remainingFft) % stepX); i < outputImage_->cols - point0[0]; i += stepX, ++scale_time_)
     {
 
         cv::line(*outputImage_, cv::Point(i, 12), cv::Point(i, 17), colorIn, 1);
 
-        cv::putText(*outputImage_, std::to_string(timeInterval_ * scaleTime), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.25, colorIn, 1);
+        cv::putText(*outputImage_, std::to_string(scale_time_interval_ * scale_time_), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.4, colorIn, 1);
     }
 }
