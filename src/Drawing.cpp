@@ -2,7 +2,7 @@
 
 SpecImage::SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, float timePerImg)
 {
-    y_ = inputSam / 2 + 1; //transform to numer of output samples
+    y_ = inputSam / 2 + 1; //transform to number of output samples
     x_ = numOfCol;         // num of columns on image
     samplingRate_ = samplingRate / 2;
     timePerImg_ = timePerImg;
@@ -13,11 +13,9 @@ SpecImage::SpecImage(int height, int width, int inputSam, int numOfCol, int samp
     //create temporary image based on original data and then scale it
     tempImage_ = new cv::Mat(y_, x_, CV_16UC1, cv::Scalar(0));
 
-    //TODO correct handling errors
     if (image_->empty() || tempImage_->empty())
     {
-        std::cout << "\n Error - image not created\n";
-        return;
+        throw std::runtime_error("Error: couldn`t create image");
     }
 }
 
@@ -27,7 +25,7 @@ SpecImage::~SpecImage()
     delete tempImage_;
 }
 
-int SpecImage::createImage(std::vector<float *> *data)
+void SpecImage::createImage(std::vector<float *> *data)
 {
     //create images from full windows
     int numOfImages = data->size() / x_;
@@ -44,12 +42,11 @@ int SpecImage::createImage(std::vector<float *> *data)
             }
         }
         if (!saveImage(std::to_string(k)))
-            return -1;
+            throw std::runtime_error("Error: couldn't save image");
     }
 
     //create image from remaining samples
-    //clear tempImage
-    *tempImage_ = cv::Scalar(0);
+    *tempImage_ = cv::Scalar(0); //clear tempImage
 #pragma omp parallel for
     for (uint i = 0; i < (data->size() - (x_ * numOfImages)); ++i)
     {
@@ -61,13 +58,12 @@ int SpecImage::createImage(std::vector<float *> *data)
         }
     }
     if (!saveImage(std::to_string(numOfImages)))
-        return -1;
-
-    return 1;
+        throw std::runtime_error("Error: couldn't save image");
 }
 
 bool SpecImage::saveImage(std::string value)
 {
+    //scale tempImage to resolution of output image dedclared by user
     cv::resize(*tempImage_, *image_, image_->size());
     drawScale(value);
     return cv::imwrite("./output/Spectrogram" + value + ".png", *image_);
@@ -76,6 +72,8 @@ bool SpecImage::saveImage(std::string value)
 void SpecImage::addBorder()
 {
     //init width and height of borders + color
+
+    //TODO co ze skalą? robimy dynamiczną?
     //int top = (int)(0.02 * image_->rows);
     //int left = (int)(0.015 * image_->cols);
     int top = 18, left = 25;
@@ -112,9 +110,11 @@ void SpecImage::drawScale(std::string value)
     }
 
     //OX
-    //set to draw scale every 5 seconds
+    //set to draw scale every 5 seconds - calculate step
     int stepX = (5 * image_->cols) / timePerImg_;
+    //calculate how many values program can draw
     int howManyValues = image_->cols / stepX;
+    //calculate how many FFT remain
     int remainingFft = image_->cols - stepX * howManyValues;
     int numOfImg = std::stoi(value);
 

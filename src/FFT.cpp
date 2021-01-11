@@ -9,6 +9,7 @@ Fft_samples::Fft_samples(const GeneratorConfiguration *cfg) : FFT_INPUT_SAMPLES(
   fftw_init_threads();
   fftw_plan_with_nthreads(omp_get_max_threads());
 
+  //init arrays & plan to run FFT
   input_window_ = new float[FFT_INPUT_SAMPLES];
   output_buffer_ = new fftwf_complex[FFT_OUTPUT_SAMPLES];
   plan = fftwf_plan_dft_r2c_1d(FFT_INPUT_SAMPLES, input_window_, output_buffer_, FFTW_ESTIMATE);
@@ -38,6 +39,7 @@ void Fft_samples::processSamples(const sample_fmt *data, uint data_size)
   }
 }
 
+//hanningWindow to format data in order to properly run FFT
 void Fft_samples::hanningWindow(const sample_fmt *curr_window_head)
 {
   for (uint i = 0; i < FFT_INPUT_SAMPLES; ++i)
@@ -47,12 +49,14 @@ void Fft_samples::hanningWindow(const sample_fmt *curr_window_head)
   }
 }
 
+//calculate FFT and write normalized scores to specBuf
 void Fft_samples::runFft()
 {
   fftwf_execute(plan);
 
   float *tempBuf = new float[FFT_OUTPUT_SAMPLES];
 
+  //normalize output sample - logarithmic scale
   for (uint i = 0; i < FFT_OUTPUT_SAMPLES; ++i)
   {
     output_buffer_[i][0] *= (2. / FFT_INPUT_SAMPLES);
