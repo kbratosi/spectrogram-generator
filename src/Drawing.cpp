@@ -85,7 +85,7 @@ void SpecImage::addScaleLines(int point0[])
     cv::Point endH(outputImage_->cols, point0[1] - 1);
     cv::line(*outputImage_, beginH, endH, colorIn, 1);
 
-    cv::Point beginV(outputImage_->cols - point0[0], 0);
+    cv::Point beginV(outputImage_->cols - point0[0], point0[1]);
     cv::Point endV(outputImage_->cols - point0[0], outputImage_->rows);
     cv::line(*outputImage_, beginV, endV, colorIn, 1);
 }
