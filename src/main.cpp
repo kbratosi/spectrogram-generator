@@ -1,30 +1,25 @@
 #include "SpectrogramGenerator.hpp"
 #include "FFT.hpp"
 #include "Drawing.hpp"
-#include "ConfigReader.hpp"
+#include "GeneratorConfiguration.hpp"
 #include "Benchmark.hpp"
 
 #include <iostream>
-#include <fstream>
 
-#include <fftw3.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <boost/test/unit_test.hpp>
-
-#include <boost/python.hpp>
-
-int main()
+int main(int argc, char* argv[])
 {
-  std::cout << "Hello world!" << std::endl;
-  // Spooky scary skeleton!
-  // *GUI
+  if(argv[1] == nullptr || argc > 2) {
+    std::cerr << "Wrong number of parameters" << std::endl;
+    std::cout << "Usage: ./run.sh <path_to_file>" << std::endl;
+    return -1;
+  }
+  std::string file_name = argv[1];
 
-  // get input
   GeneratorConfiguration config;
   try
   {
     config.read();
+    config.processParameters();
   }
   catch (boost::python::error_already_set const &)
   {
@@ -38,10 +33,11 @@ int main()
 
   SpectrogramGenerator generator(&config);
 
+
   std::cout << "Decoder" << std::endl;
   try
   {
-    generator.openFile("audio/jazz.mp3");
+    generator.openFile(file_name);
     generator.setupDecoder();
     generator.decodeAudioFile();
   }
