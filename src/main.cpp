@@ -1,7 +1,6 @@
 #include "SpectrogramGenerator.hpp"
 #include "DataComputer.hpp"
 #include "GeneratorConfiguration.hpp"
-#include "Benchmark.hpp"
 
 #include <iostream>
 
@@ -39,6 +38,8 @@ int main(int argc, char *argv[])
     generator.openFile(file_name);
     generator.setupDecoder();
     generator.decodeAudioFile();
+    generator.processSamples();
+    generator.plotSpectrogram();
   }
   catch (std::exception &e)
   {
@@ -46,17 +47,4 @@ int main(int argc, char *argv[])
               << "Shutting down..." << std::endl;
     return -1;
   }
-
-  std::cout << "FFT" << std::endl;
-  Benchmark<std::chrono::milliseconds> fftTime;
-  generator.processSamples();
-  size_t score1 = fftTime.elapsed();
-
-  std::cout << "OpenCV" << std::endl;
-  Benchmark<std::chrono::milliseconds> cvTime;
-  generator.plotSpectrogram();
-  size_t score2 = cvTime.elapsed();
-
-  std::cout << "FFT: " << score1 << " ms" << std::endl
-            << "OpenCV: " << score2 << " ms" << std::endl;
 }
