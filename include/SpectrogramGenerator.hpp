@@ -3,10 +3,8 @@
 
 #include "GeneratorConfiguration.hpp"
 #include "Decoder.hpp"
-#include "FFT.hpp"
 #include "ImageGenerator.hpp"
 #include "DataComputer.hpp"
-#include "Drawing.hpp"
 
 typedef class SpectrogramGenerator
 {
