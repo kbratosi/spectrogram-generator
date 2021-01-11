@@ -32,7 +32,7 @@ private:
 
     float *input_window_;
     fftwf_complex *output_buffer_;
-    std::vector<float *> *specBuf;
+    std::vector<float *> *specBuf; //vector to store arrays of scores of each FFT transformation
 };
 
 #endif

@@ -8,17 +8,22 @@
 class SpecImage
 {
 public:
-    SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, float timePerImg);
+    SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, int timePerImg, int timeInterval);
     ~SpecImage();
     bool saveImage(std::string value);
-    int createImage(std::vector<float *> *data);
-    void addBorder();
+    void createImage(std::vector<float *> *data);
     void drawScale(std::string value);
+    void addScaleLines(int point0[]);
 
 private:
-    cv::Mat *image_, *tempImage_;
-    int x_, y_, scaleTime, samplingRate_;
-    float timePerImg_;
+    cv::Mat *image_, *outputImage_, *tempImage_;
+    /*
+    x_ - width of image create from FFT transformation
+    y_ - height --- || --- || --- || --- 
+    scaleTime - variable used to help displaying value on scale
+    timePerImg_ - calculated time displayed on one image
+    */
+    int x_, y_, scaleTime, samplingRate_, timePerImg_, timeInterval_;
 };
 
 #endif
