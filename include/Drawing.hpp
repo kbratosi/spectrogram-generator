@@ -8,7 +8,7 @@
 class SpecImage
 {
 public:
-    SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, float timePerImg);
+    SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, int timePerImg, int timeInterval);
     ~SpecImage();
     bool saveImage(std::string value);
     void createImage(std::vector<float *> *data);
@@ -23,8 +23,7 @@ private:
     scaleTime - variable used to help displaying value on scale
     timePerImg_ - calculated time displayed on one image
     */
-    int x_, y_, scaleTime, samplingRate_;
-    float timePerImg_;
+    int x_, y_, scaleTime, samplingRate_, timePerImg_, timeInterval_;
 };
 
 #endif

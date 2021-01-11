@@ -1,11 +1,12 @@
 #include "Drawing.hpp"
 
-SpecImage::SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, float timePerImg)
+SpecImage::SpecImage(int height, int width, int inputSam, int numOfCol, int samplingRate, int timePerImg, int timeInterval)
 {
     y_ = inputSam / 2 + 1; //transform to number of output samples
     x_ = numOfCol;         // num of columns on image
     samplingRate_ = samplingRate / 2;
     timePerImg_ = timePerImg;
+    timeInterval_ = timeInterval;
     scaleTime = 0;
 
     //output image
@@ -74,11 +75,6 @@ bool SpecImage::saveImage(std::string value)
 void SpecImage::addScaleLines(int point0[])
 {
     //init width and height of borders + color
-
-    //TODO co ze skalą? robimy dynamiczną?
-    //int top = (int)(0.02 * image_->rows);
-    //int left = (int)(0.015 * image_->cols);
-    //int top = 18, right = 35;
     cv::Scalar background(0);
 
     cv::copyMakeBorder(*image_, *outputImage_, point0[1], 0, 0, point0[0], cv::BORDER_CONSTANT, background);
@@ -96,7 +92,7 @@ void SpecImage::addScaleLines(int point0[])
 
 void SpecImage::drawScale(std::string value)
 {
-    //set point to cut scale Lines (upper - right corner)
+    //set point of intersecting scale Lines (upper - right corner)
     int point0[2] = {45, 18};
     addScaleLines(point0);
 
@@ -116,18 +112,18 @@ void SpecImage::drawScale(std::string value)
 
     //OX
     //set to draw scale every 5 seconds - calculate step
-    int stepX = (5 * outputImage_->cols) / timePerImg_;
+    int stepX = (timeInterval_ * outputImage_->cols) / timePerImg_;
     //calculate how many values program can draw
     int howManyValues = outputImage_->cols / stepX;
     //calculate how many FFT remain
     int remainingFft = outputImage_->cols - stepX * howManyValues;
     int numOfImg = std::stoi(value);
 
-    for (int i = ((numOfImg * remainingFft) % stepX) + point0[0]; i < outputImage_->cols; i += stepX, ++scaleTime)
+    for (int i = ((numOfImg * remainingFft) % stepX); i < outputImage_->cols; i += stepX, ++scaleTime)
     {
 
         cv::line(*outputImage_, cv::Point(i, 12), cv::Point(i, 17), colorIn, 1);
 
-        cv::putText(*outputImage_, std::to_string(5 * scaleTime), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
+        cv::putText(*outputImage_, std::to_string(timeInterval_ * scaleTime), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.25, colorIn, 1);
     }
 }
