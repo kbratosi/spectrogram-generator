@@ -12,8 +12,8 @@ public:
     ~SpecImage();
     bool saveImage(std::string value);
     void createImage(std::vector<float *> *data);
-    void addBorder();
     void drawScale(std::string value);
+    void addScaleLines(int point0[]);
 
 private:
     cv::Mat *image_, *outputImage_, *tempImage_;

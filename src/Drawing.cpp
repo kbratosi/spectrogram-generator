@@ -67,51 +67,54 @@ bool SpecImage::saveImage(std::string value)
 {
     //scale tempImage to resolution of output image dedclared by user
     cv::resize(*tempImage_, *image_, image_->size());
-    std::cout << "\nTu jeszcze działa sx";
     drawScale(value);
     return cv::imwrite("./output/Spectrogram" + value + ".png", *outputImage_);
 }
 
-void SpecImage::addBorder()
+void SpecImage::addScaleLines(int point0[])
 {
     //init width and height of borders + color
 
     //TODO co ze skalą? robimy dynamiczną?
     //int top = (int)(0.02 * image_->rows);
     //int left = (int)(0.015 * image_->cols);
-    int top = 18, left = 25;
+    //int top = 18, right = 35;
     cv::Scalar background(0);
-    std::cout << "\nTu działa";
-    cv::copyMakeBorder(*image_, *outputImage_, top, 0, left, 0, cv::BORDER_CONSTANT, background);
+
+    cv::copyMakeBorder(*image_, *outputImage_, point0[1], 0, 0, point0[0], cv::BORDER_CONSTANT, background);
+
+    cv::Scalar colorIn(65000);
+
+    cv::Point beginH(0, point0[1] - 1);
+    cv::Point endH(outputImage_->cols, point0[1] - 1);
+    cv::line(*outputImage_, beginH, endH, colorIn, 1);
+
+    cv::Point beginV(outputImage_->cols - point0[0], 0);
+    cv::Point endV(outputImage_->cols - point0[0], outputImage_->rows);
+    cv::line(*outputImage_, beginV, endV, colorIn, 1);
 }
 
 void SpecImage::drawScale(std::string value)
 {
+    //set point to cut scale Lines (upper - right corner)
+    int point0[2] = {45, 18};
+    addScaleLines(point0);
 
-    addBorder();
-    std::cout << "\nTu tez dziala";
-    //set point from which begins spectrogram
-    //int point0[2] = {0.015 * image_->cols, 0.02 * image_->rows};
-    int point0[2] = {25, 18};
-
-    cv::Point beginH(0, point0[1] - 1);
-    cv::Point endH(outputImage_->cols, point0[1] - 1);
-    cv::Point beginV(point0[0] - 1, 0);
-    cv::Point endV(point0[0] - 1, outputImage_->rows);
     cv::Scalar colorIn(65000);
-
-    //draw number lines
-    cv::line(*outputImage_, beginH, endH, colorIn, 1);
-    cv::line(*outputImage_, beginV, endV, colorIn, 1);
-
     // OY
+    cv::putText(*outputImage_, "Hz", cv::Point(outputImage_->cols - point0[0] + 6, point0[1] + 10), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1.5);
     //set to draw scale every 1 kHz
     int stepY = (1000 * outputImage_->rows) / samplingRate_;
+
 #pragma omp parallel for
-    for (int i = point0[1]; i < outputImage_->rows; i += stepY)
+    for (int i = point0[1] + stepY; i < outputImage_->rows; i += stepY)
     {
-        cv::putText(*outputImage_, std::to_string(((i - point0[1]) / stepY) * 1000), cv::Point(0, i), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
-    }
+        cv::Point scaleLineB(outputImage_->cols - point0[0] + 4, i);
+        cv::Point scaleLineA(outputImage_->cols - point0[0], i);
+        cv::line(*outputImage_, scaleLineA, scaleLineB, colorIn, 1);
+
+        cv::putText(*outputImage_, std::to_string(((i - point0[1]) / stepY) * 1000), cv::Point(outputImage_->cols - point0[0] + 6, i), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
+        }
 
     //OX
     //set to draw scale every 5 seconds - calculate step
@@ -124,6 +127,8 @@ void SpecImage::drawScale(std::string value)
 
     for (int i = ((numOfImg * remainingFft) % stepX) + point0[0]; i < outputImage_->cols; i += stepX, ++scaleTime)
     {
+        cv::Point scaleLineB(outputImage_->cols - point0[0] + 2, i);
+        cv::Point scaleLineA(outputImage_->cols - point0[0] - 2, i);
         cv::putText(*outputImage_, std::to_string(5 * scaleTime), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
     }
 }
