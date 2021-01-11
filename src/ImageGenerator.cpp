@@ -1,18 +1,22 @@
 #include "ImageGenerator.hpp"
 
-ImageGenerator::ImageGenerator(int height, int width, int inputSam, int numOfCol, int samplingRate, int timePerImg, int timeInterval)
+ImageGenerator::ImageGenerator(const GeneratorConfiguration *cfg)
 {
-    y_ = inputSam / 2 + 1; //transform to number of output samples
-    x_ = numOfCol;         // num of columns on image
-    samplingRate_ = samplingRate / 2;
-    timePerImg_ = timePerImg;
-    timeInterval_ = timeInterval;
+    y_ = cfg->fft_out_frame_count;
+    x_ = cfg->fft_per_img;
+
+    samplingRate_ = cfg->out_sample_rate / 2;
+    //timePerImg_ = timePerImg;
+    //timeInterval_ = cfg->img_scale_time_interval;
     scaleTime = 0;
 
-    //output image
+    //output image with declared by user resolution
     image_ = new cv::Mat(height, width, CV_16UC1, cv::Scalar(0));
+
+    //output image after adding scale lines
     outputImage_ = new cv::Mat();
-    //create temporary image based on original data and then scale it
+
+    //image to process based on original data from FFT
     tempImage_ = new cv::Mat(y_, x_, CV_16UC1, cv::Scalar(0));
 
     if (image_->empty() || tempImage_->empty())
@@ -28,6 +32,7 @@ ImageGenerator::~ImageGenerator()
     delete outputImage_;
 }
 
+//function to create set of images based on data from  FFT
 void ImageGenerator::createImage(std::vector<float *> *data)
 {
     //create images from full windows
@@ -64,9 +69,10 @@ void ImageGenerator::createImage(std::vector<float *> *data)
         throw std::runtime_error("Error: couldn't save image");
 }
 
+//function to save image into declared by user spectrogram's resolution
 bool ImageGenerator::saveImage(std::string value)
 {
-    //scale tempImage to resolution of output image dedclared by user
+    //scale tempImage to resolution of output image
     cv::resize(*tempImage_, *image_, image_->size());
     drawScale(value);
     return cv::imwrite("./output/Spectrogram" + value + ".png", *outputImage_);
@@ -76,20 +82,22 @@ void ImageGenerator::addScaleLines(int point0[])
 {
     //init width and height of borders + color
     cv::Scalar background(0);
+    cv::Scalar colorIn(65000);
 
     cv::copyMakeBorder(*image_, *outputImage_, point0[1], 0, 0, point0[0], cv::BORDER_CONSTANT, background);
 
-    cv::Scalar colorIn(65000);
-
+    //draw OX scale line
     cv::Point beginH(0, point0[1] - 1);
     cv::Point endH(outputImage_->cols, point0[1] - 1);
     cv::line(*outputImage_, beginH, endH, colorIn, 1);
 
+    //draw OY scale line
     cv::Point beginV(outputImage_->cols - point0[0], point0[1]);
     cv::Point endV(outputImage_->cols - point0[0], outputImage_->rows);
     cv::line(*outputImage_, beginV, endV, colorIn, 1);
 }
 
+//function to draw scale
 void ImageGenerator::drawScale(std::string value)
 {
     //set point of intersecting scale Lines (upper - right corner)

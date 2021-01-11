@@ -1,5 +1,7 @@
-#ifndef SPECTROGRAM_HPP
-#define SPECTROGRAM_HPP
+#ifndef IMAGEGENERATOR_HPP
+#define IMAGEGENERATOR_HPP
+
+#include "ConfigReader.hpp"
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -8,8 +10,9 @@
 class ImageGenerator
 {
 public:
-    ImageGenerator(int height, int width, int inputSam, int numOfCol, int samplingRate, int timePerImg, int timeInterval);
+    ImageGenerator(const GeneratorConfiguration *cfg;
     ~ImageGenerator();
+
     bool saveImage(std::string value);
     void createImage(std::vector<float *> *data);
     void drawScale(std::string value);
@@ -21,9 +24,10 @@ private:
     x_ - width of image create from FFT transformation
     y_ - height --- || --- || --- || --- 
     scaleTime - variable used to help displaying value on scale
-    timePerImg_ - calculated time displayed on one image
+    timePerImg_ - calculated time in ms displayed on one image
+    timeI
     */
-    int x_, y_, scaleTime, samplingRate_, timePerImg_, timeInterval_;
+    int x_, y_, scaleTime, samplingRate_, timePerImg_, scale_time_interval_;
 };
 
 #endif
