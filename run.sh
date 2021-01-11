@@ -2,4 +2,4 @@
 rm output/*
 mkdir -p output > /dev/null   # clears previous output!
 export PYTHONPATH=$PWD
-./bin/spectrograms
+./bin/spectrograms $1

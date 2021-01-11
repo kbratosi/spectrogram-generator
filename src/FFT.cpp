@@ -2,9 +2,9 @@
 #include <cassert>
 #include <iostream>
 
-Fft_samples::Fft_samples(const GeneratorConfiguration *cfg) : FFT_INPUT_SAMPLES(cfg->fft_in_frame_count),
-                                                              FFT_OUTPUT_SAMPLES(cfg->fft_out_frame_count),
-                                                              DELTA_FRAME(cfg->delta_frame)
+Fft_samples::Fft_samples(const GeneratorConfiguration *cfg) : FFT_INPUT_SAMPLES(cfg->fft_in_frame_count_),
+                                                              FFT_OUTPUT_SAMPLES(cfg->fft_out_frame_count_),
+                                                              DELTA_FRAME(cfg->fft_delta_frame_)
 {
   fftw_init_threads();
   fftw_plan_with_nthreads(omp_get_max_threads());

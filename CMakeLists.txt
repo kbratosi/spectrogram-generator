@@ -22,10 +22,10 @@ find_package( Python COMPONENTS Interpreter Development REQUIRED )
 find_package( Boost COMPONENTS unit_test_framework python REQUIRED )
 
 include_directories( 
-  ${OpenCV_INCLUDE_DIRS}
   ${FFTW_INCLUDE_DIRS}
-  ${Python_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
   ${OpenMP_CXX_INCLUDE_DIRS}
+  ${Python_INCLUDE_DIRS}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
   ${Boost_PYTHON_LIBRARY}
 )

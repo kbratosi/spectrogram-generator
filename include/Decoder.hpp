@@ -11,7 +11,7 @@ extern "C"
 }
 #endif
 
-#include "ConfigReader.hpp"
+#include "GeneratorConfiguration.hpp"
 
 typedef float sample_fmt; // sample format - bit depth & int/float coding
 

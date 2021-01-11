@@ -1,7 +1,7 @@
 #ifndef SPECTROGRAMGENERATOR_HPP
 #define SPECTROGRAMGENERATOR_HPP
 
-#include "ConfigReader.hpp"
+#include "GeneratorConfiguration.hpp"
 #include "Decoder.hpp"
 #include "FFT.hpp"
 #include "Drawing.hpp"
