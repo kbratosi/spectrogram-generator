@@ -109,12 +109,10 @@ void SpecImage::drawScale(std::string value)
 #pragma omp parallel for
     for (int i = point0[1] + stepY; i < outputImage_->rows; i += stepY)
     {
-        cv::Point scaleLineB(outputImage_->cols - point0[0] + 4, i);
-        cv::Point scaleLineA(outputImage_->cols - point0[0], i);
-        cv::line(*outputImage_, scaleLineA, scaleLineB, colorIn, 1);
+        cv::line(*outputImage_, cv::Point(outputImage_->cols - point0[0], i), cv::Point(outputImage_->cols - point0[0] + 4, i), colorIn, 1);
 
         cv::putText(*outputImage_, std::to_string(((i - point0[1]) / stepY) * 1000), cv::Point(outputImage_->cols - point0[0] + 6, i), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
-        }
+    }
 
     //OX
     //set to draw scale every 5 seconds - calculate step
@@ -127,8 +125,9 @@ void SpecImage::drawScale(std::string value)
 
     for (int i = ((numOfImg * remainingFft) % stepX) + point0[0]; i < outputImage_->cols; i += stepX, ++scaleTime)
     {
-        cv::Point scaleLineB(outputImage_->cols - point0[0] + 2, i);
-        cv::Point scaleLineA(outputImage_->cols - point0[0] - 2, i);
+
+        cv::line(*outputImage_, cv::Point(i, 12), cv::Point(i, 17), colorIn, 1);
+
         cv::putText(*outputImage_, std::to_string(5 * scaleTime), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
     }
 }
