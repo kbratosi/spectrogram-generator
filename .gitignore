@@ -5,3 +5,4 @@ test
 wyniki.txt
 *.pyc
 output/*
+docs/html/*
