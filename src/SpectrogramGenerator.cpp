@@ -5,13 +5,10 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg)
   data_ = nullptr;
   data_size_ = 0;
 
-<<<<<<< HEAD
   out_sample_rate_ = cfg->out_sample_rate;
 
   float timePerImg = (1 - cfg->fft_overlapping) * cfg->fft_per_img / 1000 * cfg->fft_input_time_window;
 
-=======
->>>>>>> master
   decoder_ = new Decoder(cfg);
   transformation_ = new Fft_samples(cfg);
   picture_ = new SpecImage(cfg->img_height,
@@ -32,7 +29,7 @@ SpecGen::~SpectrogramGenerator()
 }
 
 // decoder
-void SpecGen::openFile(std::string file_name) 
+void SpecGen::openFile(std::string file_name)
 {
   decoder_->openFile(file_name);
 }

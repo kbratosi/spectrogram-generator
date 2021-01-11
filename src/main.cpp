@@ -39,20 +39,16 @@ int main()
   SpectrogramGenerator generator(&config);
 
   std::cout << "Decoder" << std::endl;
-<<<<<<< HEAD
-  if (generator.setupDecoder("audio/test20B.mp3") != 0)
-    return -1;
-  if (generator.decodeAudioFile() != 0)
-=======
-  try {
+  try
+  {
     generator.openFile("audio/jazz.mp3");
     generator.setupDecoder();
     generator.decodeAudioFile();
   }
-  catch(std::exception &e) {
+  catch (std::exception &e)
+  {
     std::cerr << e.what() << std::endl
               << "Shutting down..." << std::endl;
->>>>>>> master
     return -1;
   }
 
