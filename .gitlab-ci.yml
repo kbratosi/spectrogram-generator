@@ -31,7 +31,8 @@ pages:
   #  - mv ./docs/html/ public
   script:
   # - apk update && apk add doxygen graphviz ttf-freefont
-  - doxygen docs/spectrogramDox
+  - cd docs
+  - doxygen spectrogramDox
   - mv -f docs/html/ public/
   artifacts:
     paths:
