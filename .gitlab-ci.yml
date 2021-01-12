@@ -13,13 +13,14 @@ build:
   script: echo "Building the app"
     - sh ./build.sh
 
-# test:
-#   stage: test
-#   script: echo "Running tests"
-# script:
-# - sh ./tests.sh
+test:
+  stage: test
+  script: echo "Running tests"
+    - sh ./tests.sh
+  only:
+      -master
 
-#  - mv ./ <folderName> /html/ public
+
 
 documentation:
   stage: documentation
