@@ -44,5 +44,5 @@ void SpecGen::processSamples()
 // visualization
 void SpecGen::plotSpectrogram()
 {
-  picture_->createImage(transformation_->getSpecBuf());
+  picture_->createImage(transformation_->getTransforms());
 }

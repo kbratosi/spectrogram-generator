@@ -32,7 +32,6 @@ ImageGenerator::~ImageGenerator()
     delete outputImage_;
 }
 
-//function to create set of images based on data from  FFT
 void ImageGenerator::createImage(std::vector<float *> *data)
 {
     //create images from full windows
@@ -69,7 +68,6 @@ void ImageGenerator::createImage(std::vector<float *> *data)
         throw std::runtime_error("Error: couldn't save image");
 }
 
-//function to save image into declared by user spectrogram's resolution
 bool ImageGenerator::saveImage(std::string value)
 {
     //scale tempImage to resolution of output image
@@ -97,7 +95,6 @@ void ImageGenerator::addScaleLines(int point0[])
     cv::line(*outputImage_, beginV, endV, colorIn, 1);
 }
 
-//function to draw scale
 void ImageGenerator::drawScale(std::string value)
 {
     //set point of intersecting scale Lines (upper - right corner)
