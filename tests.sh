@@ -1,2 +1,3 @@
-./build.sh -DBUILD_TESTS=TRUE > /dev/null
+#!/bin/bash
+./build.sh -DBUILD_TESTS=TRUE
 ./build/basic_test
