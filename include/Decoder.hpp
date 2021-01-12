@@ -52,7 +52,13 @@ public:
   ///@see GeneratorConfiguration
   Decoder(const GeneratorConfiguration *cfg);
   ~Decoder();
-
+  //
+  AVFormatContext *getAVFormatCtx();
+  AVCodecContext *getAVCodecCtx();
+  SwrContext *getSwr();
+  AVPacket *getAVPacket();
+  AVFrame *getAVFrame();
+  //
   /// open audio file and retrieve information from its header
   void openFile(std::string file_name);
 

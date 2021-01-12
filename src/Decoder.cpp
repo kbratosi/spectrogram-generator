@@ -66,6 +66,22 @@ void Decoder::decode(SampleFormat **data, int *data_size)
 
 // // // // //
 
+AVFormatContext *Decoder::getAVFormatCtx() {
+  return av_format_ctx_;
+}
+AVCodecContext *Decoder::getAVCodecCtx() {
+  return av_codec_ctx_;
+}
+SwrContext *Decoder::getSwr() {
+  return swr_;
+}
+AVPacket *Decoder::getAVPacket() {
+  return av_packet_;
+}
+AVFrame *Decoder::getAVFrame() {
+  return av_frame_;
+}
+
 // find and open required codec for file decoding
 void Decoder::initCodecContext()
 {

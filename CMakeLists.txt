@@ -52,7 +52,7 @@ set (BUILD_TESTS) #set TRUE if you want to build tests
 
 if(BUILD_TESTS)
      list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)
-     find_package(Boost COMPONENTS system filesystem unit_test_framework REQUIRED)
+     find_package(Boost COMPONENTS unit_test_framework REQUIRED QUIET)
      
      set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build)
      
@@ -67,8 +67,7 @@ if(BUILD_TESTS)
      ${OpenMP_CXX_LIBRARIES}
      fftw3_omp
      ${FFTW_LIBRARIES}
-     ${OpenCV_LIBS} ${Boost_FILESYSTEM_LIBRARY}
-     ${Boost_SYSTEM_LIBRARY}
+     ${OpenCV_LIBS}
      ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
      )
      

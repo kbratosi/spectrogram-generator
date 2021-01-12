@@ -59,3 +59,12 @@ BOOST_AUTO_TEST_CASE(process_data)
     int num_of_FFT = 1 + (SIZE_OF_CHUNK - config.fft_in_frame_count_) / config.fft_delta_frame_;
     BOOST_CHECK_EQUAL(transformation->getPtrTransforms()->size(), num_of_FFT);
 }
+
+BOOST_AUTO_TEST_CASE(open_file)
+{
+  GeneratorConfiguration config;
+  const std::string FILE_NAME = "./audio/440hz.mp3";
+  Decoder decoder(&config);
+  decoder.openFile(FILE_NAME);
+  BOOST_CHECK(decoder.getAVFormatCtx());
+}
