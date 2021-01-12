@@ -11,7 +11,6 @@ file( GLOB TARGET_SRC "./src/*.cpp" )
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin )
 set( CMAKE_EXPORT_COMPILE_COMMANDS )
 
-# headers
 include_directories( ${CMAKE_HOME_DIRECTORY}/include )
 add_subdirectory( lib/FFmpeg )
 

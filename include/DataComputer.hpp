@@ -39,14 +39,15 @@ public:
   std::vector<float *> *getPtrTransforms();
 
 private:
-  const uint FFT_INPUT_SAMPLES;  //size of input data chunk
+  const uint FFT_INPUT_SAMPLES;  // size of input data chunk
   const uint FFT_OUTPUT_SAMPLES; // size of output transform
-  const float DELTA_FRAME;       //offset between subsequent FFTs
+  const float DELTA_FRAME;       // offset between subsequent FFT input data chunks
 
-  fftwf_plan plan_;
+  fftwf_plan plan_;              // module responsible for transform calculation
 
-  float *input_window_;
-  fftwf_complex *output_buffer_;
+  float *input_window_;          // input data chunk buffer
+  fftwf_complex *output_buffer_; // buffer storing complex FFT output
+
   std::vector<float *> transforms_; //vector to store arrays of scores of each FFT transformation
 };
 

@@ -6,7 +6,7 @@
 #include "ImageGenerator.hpp"
 #include "DataComputer.hpp"
 
-///Decode and plot spectrograms from audio files
+/// Decode and plot spectrograms from audio files
 class SpectrogramGenerator
 {
   Decoder *decoder_;
@@ -28,9 +28,9 @@ public:
   void setupDecoder();
   /// wrapper for Decoder::decode()
   void decodeAudioFile();
-  ///wrapper for Decoder::processSamples()
+  /// wrapper for Decoder::processSamples()
   void processSamples();
-  ///wrapper for ImageGenerator::generateSpectrograms()
+  /// wrapper for ImageGenerator::generateSpectrograms()
   void generateSpectrograms();
 };
 

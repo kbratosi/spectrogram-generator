@@ -15,9 +15,12 @@ extern "C"
 
 typedef float SampleFormat; // sample format - bit depth & int/float coding
 
-/// Class used for opening an encoded audio file, retrieving information about its contents,
-/// * decoding encoded audio packets to raw data and saving it to a specified buffer.
-/// * Uses libav
+/// Class used for:
+/// * opening an encoded audio file
+/// * retrieving information about its contents
+/// * decoding encoded audio packets to raw data
+/// * saving it to a specified buffer.
+/// Uses libav
 class Decoder
 {
   AVFormatContext *av_format_ctx_; // file information
@@ -66,7 +69,7 @@ public:
   void setup();
 
   /// retrieve audio data from file, prepare data stream for fft transforms
-  ///@param data_size pointer to field number of samples
+  ///@param data_size pointer to field storing number of samples
   ///@param data pointer to array storing raw audio signal
   void decode(SampleFormat **data, int *data_size);
 };
