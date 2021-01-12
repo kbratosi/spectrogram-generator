@@ -7,7 +7,6 @@ before_script:
 stages:
   - build
   - test
-  - documentation
 
 build:
   stage: build
@@ -23,8 +22,7 @@ test:
 
 
 
-documentation:
-  stage: documentation
+pages:
   script:
     - sh ./build.sh -DBUILD_DOCS=TRUE 
     - cd ./build
