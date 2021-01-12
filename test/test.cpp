@@ -53,10 +53,9 @@ BOOST_AUTO_TEST_CASE(process_data)
 
     sample_fmt data[SIZE_OF_CHUNK];
     std::fill_n(data, SIZE_OF_CHUNK, 1);
-
     transformation->processSamples(data, SIZE_OF_CHUNK);
-
     BOOST_CHECK(transformation->getTransforms()->size() > 0);
-    //test
-    //BOOST_CHECK(transformation->getTransforms()->)
+
+    int num_of_FFT = 1 + (SIZE_OF_CHUNK - config.fft_in_frame_count_) / config.fft_delta_frame_;
+    BOOST_CHECK_EQUAL(transformation->getTransforms()->size(), num_of_FFT);
 }
