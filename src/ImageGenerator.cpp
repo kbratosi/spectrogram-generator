@@ -136,3 +136,16 @@ void ImageGenerator::drawScale(std::string value)
         cv::putText(*outputImage_, std::to_string(scale_time_interval_ * scale_time_), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.4, colorIn, 1);
     }
 }
+
+cv::Mat *ImageGenerator::getImage()
+{
+    return image_;
+}
+cv::Mat *ImageGenerator::getOutputImage()
+{
+    return outputImage_;
+}
+cv::Mat *ImageGenerator::getTempImage()
+{
+    return tempImage_;
+}

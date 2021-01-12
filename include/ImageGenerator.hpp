@@ -28,6 +28,10 @@ public:
     ///@param point0 array which stores intersection point of scale lines
     void addScaleLines(int point0[]);
 
+    cv::Mat *getImage();
+    cv::Mat *getOutputImage();
+    cv::Mat *getTempImage();
+
 private:
     cv::Mat *image_, *outputImage_, *tempImage_;
     /*
