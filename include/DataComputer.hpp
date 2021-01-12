@@ -26,17 +26,17 @@ public:
   ///
   ///@param data input discrete audio signal
   ///@param data_size number of input samples
-  void processSamples(const sample_fmt *data, uint data_size);
+  void processSamples(const SampleFormat *data, uint data_size);
 
   /// apply Hanning window on computed data chunk in order to properly run FFT
   ///
   ///@param curr_window_head pointer to first element of processed data chunk
-  void hanningWindow(const sample_fmt *curr_window_head);
+  void hanningWindow(const SampleFormat *curr_window_head);
 
   /// calculate FFT, write normalized transform output to transforms_
   void compute();
 
-  std::vector<float *> *getTransforms();
+  std::vector<float *> *getPtrTransforms();
 
 private:
   const uint FFT_INPUT_SAMPLES;  //size of input data chunk
@@ -47,7 +47,7 @@ private:
 
   float *input_window_;
   fftwf_complex *output_buffer_;
-  std::vector<float *> *transforms_; //vector to store arrays of scores of each FFT transformation
+  std::vector<float *> transforms_; //vector to store arrays of scores of each FFT transformation
 };
 
 #endif

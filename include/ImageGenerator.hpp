@@ -20,7 +20,7 @@ public:
     bool saveImage(std::string value);
     ///create set of images based on data from FFT
     ///@param data vector which stores processed data in frequency domain
-    void createImage(std::vector<float *> *data);
+    void generateSpectrograms(std::vector<float *> *transforms);
     ///draw scale on image
     ///@param value information about presently created spectrogram to scale properly time scale line
     void drawScale(std::string value);

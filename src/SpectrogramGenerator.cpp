@@ -1,6 +1,6 @@
 #include "SpectrogramGenerator.hpp"
 
-SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg)
+SpectrogramGenerator::SpectrogramGenerator(const GeneratorConfiguration *cfg)
 {
   data_ = nullptr;
   data_size_ = 0;
@@ -10,7 +10,7 @@ SpecGen::SpectrogramGenerator(const GeneratorConfiguration *cfg)
   transformation_ = new DataComputer(cfg);
 }
 
-SpecGen::~SpectrogramGenerator()
+SpectrogramGenerator::~SpectrogramGenerator()
 {
   if (data_)
     free(data_);
@@ -20,29 +20,29 @@ SpecGen::~SpectrogramGenerator()
 }
 
 // decoder
-void SpecGen::openFile(std::string file_name)
+void SpectrogramGenerator::openFile(std::string file_name)
 {
   decoder_->openFile(file_name);
 }
 
-void SpecGen::setupDecoder()
+void SpectrogramGenerator::setupDecoder()
 {
   decoder_->setup();
 }
 
-void SpecGen::decodeAudioFile()
+void SpectrogramGenerator::decodeAudioFile()
 {
   decoder_->decode(&data_, &data_size_);
 }
 
-// fft
-void SpecGen::processSamples()
+// data processing
+void SpectrogramGenerator::processSamples()
 {
   transformation_->processSamples(data_, data_size_);
 }
 
-// visualization
-void SpecGen::plotSpectrogram()
+// processed data visualization
+void SpectrogramGenerator::generateSpectrograms()
 {
-  picture_->createImage(transformation_->getTransforms());
+  picture_->generateSpectrograms(transformation_->getPtrTransforms());
 }

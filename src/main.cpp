@@ -32,14 +32,13 @@ int main(int argc, char *argv[])
 
   SpectrogramGenerator generator(&config);
 
-  std::cout << "Decoder" << std::endl;
   try
   {
     generator.openFile(file_name);
     generator.setupDecoder();
     generator.decodeAudioFile();
     generator.processSamples();
-    generator.plotSpectrogram();
+    generator.generateSpectrograms();
   }
   catch (std::exception &e)
   {

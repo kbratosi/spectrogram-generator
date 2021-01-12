@@ -7,21 +7,22 @@
 #include "DataComputer.hpp"
 
 ///Decode and plot spectrograms from audio files
-typedef class SpectrogramGenerator
+class SpectrogramGenerator
 {
   Decoder *decoder_;
   ImageGenerator *picture_;
   DataComputer *transformation_;
 
-  sample_fmt *data_; // array containing raw audio data
-  int data_size_;    // number of samples
+  SampleFormat *data_; // array containing raw audio data
+  int data_size_;      // number of samples
 
 public:
-    ///@param cfg structure holding parameters required during spectrogram generation process
+  ///@param cfg structure holding parameters required during spectrogram generation process
   ///@see GeneratorConfiguration
   SpectrogramGenerator(const GeneratorConfiguration *cfg);
   ~SpectrogramGenerator();
 
+  /// wrapper for Decoder::openFile(std::string file_name)
   void openFile(std::string file_name);
   /// wrapper for Decoder::setup()
   void setupDecoder();
@@ -29,8 +30,8 @@ public:
   void decodeAudioFile();
   ///wrapper for Decoder::processSamples()
   void processSamples();
-  ///wrapper for ImageGenerator::createImage()
-  void plotSpectrogram();
-} SpecGen;
+  ///wrapper for ImageGenerator::generateSpectrograms()
+  void generateSpectrograms();
+};
 
 #endif

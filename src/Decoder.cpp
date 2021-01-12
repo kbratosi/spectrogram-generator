@@ -56,7 +56,7 @@ void Decoder::setup()
 
 // retrieve audio data from file, prepare data stream for fft transforms
 // audio stream is saved in data, number of frames is stored in data_size
-void Decoder::decode(sample_fmt **data, int *data_size)
+void Decoder::decode(SampleFormat **data, int *data_size)
 {
   allocateMemory(data);
   addOverlapPrefix(data, data_size);
@@ -134,24 +134,24 @@ void Decoder::initFrame()
 }
 
 // allocate memory prior to reading file contents
-void Decoder::allocateMemory(sample_fmt **data)
+void Decoder::allocateMemory(SampleFormat **data)
 {
-  *data = (sample_fmt *)malloc(FRAME_ALLOC_UNIT * sizeof(sample_fmt));
+  *data = (SampleFormat *)malloc(FRAME_ALLOC_UNIT * sizeof(SampleFormat));
   if (!*data)
     throw std::runtime_error("Error: couldn't allocate memory");
 }
 
 // allocate more memory for raw audio frames storage
-void Decoder::reallocateMemory(sample_fmt **data, int new_sample_capacity)
+void Decoder::reallocateMemory(SampleFormat **data, int new_sample_capacity)
 {
-  *data = (sample_fmt *)realloc(*data, new_sample_capacity * sizeof(sample_fmt));
+  *data = (SampleFormat *)realloc(*data, new_sample_capacity * sizeof(SampleFormat));
   if (!*data)
     throw std::runtime_error("Error: couldn't allocate memory");
 }
 
 // read audio file and decode it
 // raw audio is saved to data, number of frames is stored in data_size
-void Decoder::readFile(sample_fmt **data, int *data_size)
+void Decoder::readFile(SampleFormat **data, int *data_size)
 {
   int frame_count = 0;
   long data_capacity = FRAME_ALLOC_UNIT;
@@ -189,7 +189,7 @@ void Decoder::readFile(sample_fmt **data, int *data_size)
       reallocateMemory(data, data_capacity);
     }
     // append resampled frames to data
-    memcpy(*data + *data_size, buffer, frame_count * sizeof(sample_fmt));
+    memcpy(*data + *data_size, buffer, frame_count * sizeof(SampleFormat));
     *data_size += frame_count;
 
     // clean up
@@ -199,21 +199,21 @@ void Decoder::readFile(sample_fmt **data, int *data_size)
 }
 
 // append overlap 0's for first FFT input window
-void Decoder::addOverlapPrefix(sample_fmt **data, int *data_size)
+void Decoder::addOverlapPrefix(SampleFormat **data, int *data_size)
 {
   int frame_count = IN_FRAME_COUNT - DELTA_FRAME;
-  memset(*data, 0, frame_count * sizeof(sample_fmt));
+  memset(*data, 0, frame_count * sizeof(SampleFormat));
   *data_size += frame_count;
 }
 
 // append 0's to fill the last FFT input window
-void Decoder::addOverlapSuffix(sample_fmt **data, int *data_size)
+void Decoder::addOverlapSuffix(SampleFormat **data, int *data_size)
 {
   int data_capacity = *data_size / DELTA_FRAME;
   data_capacity *= DELTA_FRAME;
   data_capacity += IN_FRAME_COUNT;
   reallocateMemory(data, data_capacity);
-  memset(*data + *data_size, 0, (data_capacity - *data_size) * sizeof(sample_fmt));
+  memset(*data + *data_size, 0, (data_capacity - *data_size) * sizeof(SampleFormat));
   *data_size = data_capacity;
 }
 
