@@ -1,5 +1,5 @@
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE ExampleTest
+#define BOOST_TEST_MODULE Tests
 
 #include "GeneratorConfiguration.hpp"
 #include "ImageGenerator.hpp"
@@ -67,4 +67,35 @@ BOOST_AUTO_TEST_CASE(open_file)
   Decoder decoder(&config);
   decoder.openFile(FILE_NAME);
   BOOST_CHECK(decoder.getAVFormatCtx());
+}
+
+BOOST_AUTO_TEST_CASE(setup)
+{
+  GeneratorConfiguration config;
+  config.out_sample_rate_ = 44100;
+  const std::string FILE_NAME = "./audio/440hz.mp3";
+  Decoder decoder(&config);
+  decoder.openFile(FILE_NAME);
+  decoder.setup();
+  BOOST_CHECK(decoder.getAVCodecCtx());
+  BOOST_CHECK(decoder.getSwr());
+  BOOST_CHECK(decoder.getAVPacket());
+  BOOST_CHECK(decoder.getAVFrame());
+}
+
+BOOST_AUTO_TEST_CASE(decode)
+{
+  SampleFormat *data = nullptr;
+  int data_size = -1;
+  GeneratorConfiguration config;
+  config.fft_in_frame_count_ = 1000;
+  config.out_sample_rate_ = 44100;
+  config.fft_delta_frame_ = 500;
+  const std::string FILE_NAME = "./audio/440hz.mp3";
+  Decoder decoder(&config);
+  decoder.openFile(FILE_NAME);
+  decoder.setup();
+  decoder.decode(&data, &data_size);
+  BOOST_CHECK(data);
+  BOOST_CHECK_NE(data_size, -1);
 }

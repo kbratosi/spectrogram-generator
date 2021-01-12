@@ -47,59 +47,57 @@ target_link_libraries(
   ${Boost_PYTHON_LIBRARY}
 )
 
-#Add tests
+# add tests
 set (BUILD_TESTS) #set TRUE if you want to build tests
 
 if(BUILD_TESTS)
-     list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)
-     find_package(Boost COMPONENTS unit_test_framework REQUIRED QUIET)
-     
-     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build)
-     
-     add_executable(basic_test ${CMAKE_HOME_DIRECTORY}/test/test.cpp ${TARGET_SRC})
-     target_link_libraries(basic_test 
-     avcodec
-     avutil
-     avformat
-     swresample
-     ${Python_LIBRARIES}
-     ${Boost_PYTHON_LIBRARY}
-     ${OpenMP_CXX_LIBRARIES}
-     fftw3_omp
-     ${FFTW_LIBRARIES}
-     ${OpenCV_LIBS}
-     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
-     )
-     
-     add_test(AutoTest basic_test)
-     enable_testing()
-     
+  list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)
+  find_package(Boost COMPONENTS unit_test_framework REQUIRED QUIET)
+  
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build)
+  
+  add_executable(unit_tests ${CMAKE_HOME_DIRECTORY}/test/test.cpp ${TARGET_SRC})
+  target_link_libraries(
+    unit_tests 
+    avcodec
+    avutil
+    avformat
+    swresample
+    ${Python_LIBRARIES}
+    ${Boost_PYTHON_LIBRARY}
+    ${OpenMP_CXX_LIBRARIES}
+    fftw3_omp
+    ${FFTW_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+  )
+  add_test(AutoTest unit_tests)
+  enable_testing()
 endif()
 
 
 # generating documentation
-
 set(BUILD_DOCS) #set TRUE if you want to build docs
 
 if(BUILD_DOCS)
-    find_package(Doxygen)
-    option(BUILD_DOCUMENTATION "Create and install the HTML based API        
-    documentation (requires Doxygen)" ${DOXYGEN_FOUND})
+  find_package(Doxygen)
+  option(BUILD_DOCUMENTATION "Create and install the HTML based API        
+  documentation (requires Doxygen)" ${DOXYGEN_FOUND})
 
-    if(NOT DOXYGEN_FOUND)
-         message(FATAL_ERROR "Doxygen is needed to build the documentation.")
-    endif()
+  if(NOT DOXYGEN_FOUND)
+    message(FATAL_ERROR "Doxygen is needed to build the documentation.")
+  endif()
 
-    set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/docs/spectrogramDox.doxygen)
-    set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+  set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/docs/spectrogramDox.doxygen)
+  set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
 
-    configure_file(${doxyfile_in} ${doxyfile} @ONLY)
+  configure_file(${doxyfile_in} ${doxyfile} @ONLY)
 
-    message("Doxygen build started.")
+  message("Doxygen build started.")
 
-    add_custom_target(docs
-                      COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile_in}
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
-                      COMMENT "Generating API documentation with Doxygen"
-                      VERBATIM)
+  add_custom_target(docs
+                    COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile_in}
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
+                    COMMENT "Generating API documentation with Doxygen"
+                    VERBATIM)
 endif()

@@ -120,7 +120,7 @@ void Decoder::initSwrContext()
   swr_ = swr_alloc();
 
   av_opt_set_int       (swr_, "in_channel_count"  , av_codec_ctx_->channels      , 0);
-  av_opt_set_int       (swr_, "out_channel_count" , 1                            , 0);
+  av_opt_set_int       (swr_, "out_channel_count" , MONO                         , 0);
   av_opt_set_int       (swr_, "in_channel_layout" , av_codec_ctx_->channel_layout, 0);
   av_opt_set_int       (swr_, "out_channel_layout", AV_CH_LAYOUT_MONO            , 0);
   av_opt_set_int       (swr_, "in_sample_rate"    , av_codec_ctx_->sample_rate   , 0);

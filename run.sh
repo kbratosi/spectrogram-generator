@@ -1,5 +1,5 @@
 #!/bin/bash
-rm output/*
-mkdir -p output > /dev/null   # clears previous output!
+rm output/* > /dev/null
+mkdir -p output > /dev/null
 export PYTHONPATH=$PWD
 ./bin/spectrograms $1
