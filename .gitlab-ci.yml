@@ -23,17 +23,17 @@ test:
 
 
 pages:
-  #script:
-  #  - sh ./build.sh -DBUILD_DOCS=TRUE 
-  #  - cd ./build
-  #  - make docs
-  #  - cd ..
-  #  - mv ./docs/html/ public
   script:
-  # - apk update && apk add doxygen graphviz ttf-freefont
-  - cd docs
-  - doxygen spectrogramDox
-  - mv html/ public/
+    - sh ./build.sh -DBUILD_DOCS=TRUE 
+    - cd ./build
+    - make docs
+    - cd ..
+    - mv ./docs/html/ public
+  #script:
+  #- apk update && apk add doxygen graphviz ttf-freefont
+  #- cd docs
+  #- doxygen spectrogramDox
+  #- mv html/ public/
   artifacts:
     paths:
     - public
