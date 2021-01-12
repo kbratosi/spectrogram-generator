@@ -2,7 +2,7 @@
 
 Application to plot spectrograms from audio files.
 
-![alt text](docs/spectrogram0.png "Example spectrogram")
+![alt text](https://gitlab.com/ProtegerPW/spectograms/docs/spectrogram0.png "Example spectrogram")
 
 * Requirements
 
