@@ -1,3 +1,11 @@
+/**
+ * @file DataComputer.cpp
+ * @author Jakub Marczuk
+ * @brief File containing member functions of DataComputer
+ * @version 1.0
+ * @date 2021-01-12
+ */
+
 #include "DataComputer.hpp"
 
 DataComputer::DataComputer(const GeneratorConfiguration *cfg) : FFT_INPUT_SAMPLES(cfg->fft_in_frame_count_),
@@ -36,7 +44,6 @@ void DataComputer::processSamples(const SampleFormat *data, uint data_size)
   }
 }
 
-// apply Hanning window on computed data chunk in order to properly run FFT
 void DataComputer::hanningWindow(const SampleFormat *curr_window_head)
 {
   for (uint i = 0; i < FFT_INPUT_SAMPLES; ++i)
@@ -46,7 +53,6 @@ void DataComputer::hanningWindow(const SampleFormat *curr_window_head)
   }
 }
 
-// calculate FFT, write normalized transform to transforms_
 void DataComputer::compute()
 {
   fftwf_execute(plan_);

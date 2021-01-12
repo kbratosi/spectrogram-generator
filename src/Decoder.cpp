@@ -1,3 +1,11 @@
+/**
+ * @file Decoder.cpp
+ * @author Konrad Bratosiewicz
+ * @brief File containing member functions of Decoder
+ * @version 1.0
+ * @date 2021-01-12
+ */
+
 #include "Decoder.hpp"
 
 Decoder::Decoder(const GeneratorConfiguration *cfg) : IN_FRAME_COUNT(cfg->fft_in_frame_count_),

@@ -1,3 +1,11 @@
+/**
+ * @file SpectrogramGenerator.cpp
+ * @author Konrad Bratosiewicz
+ * @brief File containing member functions of SpectrogramGenerator
+ * @version 1.0
+ * @date 2021-01-12
+ */
+
 #include "SpectrogramGenerator.hpp"
 
 SpectrogramGenerator::SpectrogramGenerator(const GeneratorConfiguration *cfg)

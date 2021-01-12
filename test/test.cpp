@@ -11,13 +11,6 @@
 
 namespace utf = boost::unit_test;
 
-#include <boost/test/unit_test.hpp>
-
-int add(int i, int j)
-{
-    return i + j;
-}
-
 BOOST_AUTO_TEST_CASE(generate_image)
 {
     GeneratorConfiguration config;
@@ -58,6 +51,19 @@ BOOST_AUTO_TEST_CASE(process_data)
 
     int num_of_FFT = 1 + (SIZE_OF_CHUNK - config.fft_in_frame_count_) / config.fft_delta_frame_;
     BOOST_CHECK_EQUAL(transformation->getPtrTransforms()->size(), num_of_FFT);
+}
+
+BOOST_AUTO_TEST_CASE(validate_parameters)
+{
+  GeneratorConfiguration config;
+  config.fft_input_time_window_ = 50.0;
+  config.fft_overlap_ = 0.5;
+  BOOST_CHECK_NO_THROW(config.validateParameters());
+  config.fft_input_time_window_ = -1.0;
+  BOOST_CHECK_THROW(config.validateParameters(), std::runtime_error);
+  config.fft_input_time_window_ = 50.0;
+  config.fft_overlap_ = 1.5;
+  BOOST_CHECK_THROW(config.validateParameters(), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(open_file)

@@ -1,3 +1,11 @@
+/**
+ * @file SpectrogramGenerator.hpp
+ * @author Konrad Bratosiewicz
+ * @brief File containing SpectrogramGenerator class
+ * @version 1.0
+ * @date 2021-01-12
+ */
+
 #ifndef SPECTROGRAMGENERATOR_HPP
 #define SPECTROGRAMGENERATOR_HPP
 

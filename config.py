@@ -1,17 +1,18 @@
 # decoded raw data sample rate
 out_sample_rate = 44100
 
-# Fourier's Transform input packet size (vertical axis)
+# period of time taken into single FFT [ms]
 fft_input_time_window = 92.8
 
-# spectrogram overlapping
+# spectrogram overlap (0, 1)
 fft_overlap = 0.7
 
-# number of FFT's in a single image (horizontal axis)
+# number of FFT's displayed in a single image
 img_fft_per_img = 1000
 
-# output spectrogram image dimensions
+# output spectrogram dimensions [px]
 img_width = 1024
 img_height = 768
 
+# horizontal scale division unit [ms]
 img_scale_time_interval = 2500

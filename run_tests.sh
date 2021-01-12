@@ -1,3 +1,3 @@
 #!/bin/bash
-./build.sh -DBUILD_TESTS=TRUE > /dev/null
+./build.sh -DBUILD_TESTS=TRUE
 ./build/unit_tests

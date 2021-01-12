@@ -1,3 +1,11 @@
+/**
+ * @file ImageGenerator.cpp
+ * @author Jakub Marczuk
+ * @brief File containing member functions of ImageGenerator
+ * @version 1.0
+ * @date 2021-01-12
+ */
+
 #include "ImageGenerator.hpp"
 
 ImageGenerator::ImageGenerator(const GeneratorConfiguration *cfg) : 

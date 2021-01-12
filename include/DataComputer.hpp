@@ -1,3 +1,11 @@
+/**
+ * @file DataComputer.hpp
+ * @author Jakub Marczuk
+ * @brief File containing DataComputer class
+ * @version 1.0
+ * @date 2021-01-12
+ */
+
 #ifndef DATACOMPUTER_HPP
 #define DATACOMPUTER_HPP
 
@@ -23,13 +31,12 @@ public:
   ~DataComputer();
 
   ///Process discrete audio signal from time domain into frequency domain
-  ///
   ///@param data input discrete audio signal
   ///@param data_size number of input samples
+  ///@note output samples are normalized using logarithmic scale (resulting range: <-60;0>)
   void processSamples(const SampleFormat *data, uint data_size);
 
   /// apply Hanning window on computed data chunk in order to properly run FFT
-  ///
   ///@param curr_window_head pointer to first element of processed data chunk
   void hanningWindow(const SampleFormat *curr_window_head);
 

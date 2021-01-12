@@ -1,3 +1,11 @@
+/**
+ * @file Decoder.hpp
+ * @author Konrad Bratosiewicz
+ * @brief File containing Decoder class
+ * @version 1.0
+ * @date 2021-01-12
+ */
+
 #ifndef DECODER_HPP
 #define DECODER_HPP
 
@@ -20,7 +28,7 @@ typedef float SampleFormat; // sample format - bit depth & int/float coding
 /// * retrieving information about its contents
 /// * decoding encoded audio packets to raw data
 /// * saving it to a specified buffer.
-/// Uses libav
+/// Uses ffmpeg (libav).
 class Decoder
 {
   AVFormatContext *av_format_ctx_; // file information

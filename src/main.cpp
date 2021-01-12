@@ -1,7 +1,5 @@
 #include "SpectrogramGenerator.hpp"
-#include "DataComputer.hpp"
 #include "GeneratorConfiguration.hpp"
-
 #include <iostream>
 
 int main(int argc, char *argv[])

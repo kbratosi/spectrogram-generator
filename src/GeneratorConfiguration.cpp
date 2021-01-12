@@ -1,6 +1,13 @@
+/**
+ * @file GeneratorConfiguration.cpp
+ * @author Konrad Bratosiewicz
+ * @brief File containing member functions of GeneratorConfiguration
+ * @version 1.0
+ * @date 2021-01-12
+ */
+
 #include "GeneratorConfiguration.hpp"
 
-// read parameters from python configuration file
 void GeneratorConfiguration::read()
 {
   // initialize configuration script
@@ -32,7 +39,6 @@ void GeneratorConfiguration::validateParameters()
     throw std::runtime_error("Error: fft_overlap is out of (0, 1) range");
 }
 
-// calcutate complex parameters from other parameters
 void GeneratorConfiguration::processParameters()
 {
   fft_in_frame_count_ = out_sample_rate_ * fft_input_time_window_ / 1000;
