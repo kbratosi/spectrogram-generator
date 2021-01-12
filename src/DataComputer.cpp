@@ -11,16 +11,16 @@ DataComputer::DataComputer(const GeneratorConfiguration *cfg) : FFT_INPUT_SAMPLE
   input_window_ = new float[FFT_INPUT_SAMPLES];
   output_buffer_ = new fftwf_complex[FFT_OUTPUT_SAMPLES];
   plan_ = fftwf_plan_dft_r2c_1d(FFT_INPUT_SAMPLES, input_window_, output_buffer_, FFTW_ESTIMATE);
-  specBuf = new std::vector<float *>();
+  transforms_ = new std::vector<float *>();
 }
 
 DataComputer::~DataComputer()
 {
   delete[] input_window_;
   delete[] output_buffer_;
-  for (uint i = 0; i < specBuf->size(); ++i)
+  for (uint i = 0; i < transforms_->size(); ++i)
   {
-    delete[] specBuf->at(i);
+    delete[] transforms_->at(i);
   }
   fftwf_destroy_plan(plan_);
   fftw_cleanup_threads();
@@ -47,7 +47,7 @@ void DataComputer::hanningWindow(const sample_fmt *curr_window_head)
   }
 }
 
-// calculate FFT, write normalized transform to specBuf
+// calculate FFT, write normalized transform to transforms_
 void DataComputer::compute()
 {
   fftwf_execute(plan_);
@@ -60,10 +60,10 @@ void DataComputer::compute()
     output_buffer_[i][1] *= (2. / FFT_INPUT_SAMPLES);
     temp_buf[i] = 10. / log(10.) * log(pow(output_buffer_[i][0], 2) + pow(output_buffer_[i][1], 2) + 1e-6); //max value - 60dB
   }
-  specBuf->push_back(temp_buf);
+  transforms_->push_back(temp_buf);
 }
 
-std::vector<float *> *DataComputer::getSpecBuf()
+std::vector<float *> *DataComputer::getTransforms()
 {
-  return specBuf;
+  return transforms_;
 }

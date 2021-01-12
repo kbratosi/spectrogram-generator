@@ -1,0 +1,21 @@
+digraph "/home/jakub/VSProjects/ZPR/zpr-sandbox/include/Decoder.hpp"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="/home/jakub/VSProjects\l/ZPR/zpr-sandbox/include\l/Decoder.hpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="/home/jakub/VSProjects\l/ZPR/zpr-sandbox/src/Decoder.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_decoder_8cpp.html",tooltip=" "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="/home/jakub/VSProjects\l/ZPR/zpr-sandbox/include\l/SpectrogramGenerator.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_spectrogram_generator_8hpp.html",tooltip=" "];
+  Node3 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="/home/jakub/VSProjects\l/ZPR/zpr-sandbox/src/Spectrogram\lGenerator.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_spectrogram_generator_8cpp.html",tooltip=" "];
+  Node3 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="/home/jakub/VSProjects\l/ZPR/zpr-sandbox/src/main.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$main_8cpp.html",tooltip=" "];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="/home/jakub/VSProjects\l/ZPR/zpr-sandbox/include\l/DataComputer.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_data_computer_8hpp.html",tooltip=" "];
+  Node6 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="/home/jakub/VSProjects\l/ZPR/zpr-sandbox/src/DataComputer.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_data_computer_8cpp.html",tooltip=" "];
+  Node6 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}
