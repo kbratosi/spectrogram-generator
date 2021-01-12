@@ -18,17 +18,20 @@ int main(int argc, char *argv[])
   try
   {
     config.read();
+    config.validateParameters();
     config.processParameters();
+    std::cout << config;
   }
   catch (boost::python::error_already_set const &)
   {
     PyErr_Print();
     return -1;
   }
-  // display read parameters
-  std::cout << config;
-
-  // validate parameters!
+  catch (std::exception &e)
+  {
+    std::cerr << e.what() << std::endl;
+    return -1;
+  }
 
   SpectrogramGenerator generator(&config);
 

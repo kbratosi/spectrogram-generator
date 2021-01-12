@@ -1,10 +1,12 @@
 #include "GeneratorConfiguration.hpp"
 
 // read parameters from python configuration file
-void GeneratorConfiguration::read() {
+void GeneratorConfiguration::read()
+{
   // initialize configuration script
   Py_Initialize();
-  try {
+  try
+  {
     bp::object config_module = bp::import("config");
     bp::object config_namespace = config_module.attr("__dict__");
     //
@@ -16,21 +18,31 @@ void GeneratorConfiguration::read() {
     fft_input_time_window_   = bp::extract<float>(config_namespace["fft_input_time_window"  ]);
     fft_overlap_             = bp::extract<float>(config_namespace["fft_overlap"            ]);
   }
-  catch(bp::error_already_set const &) {
+  catch (bp::error_already_set const &)
+  {
     throw;
   }
 }
 
+void GeneratorConfiguration::validateParameters()
+{
+  if (fft_input_time_window_ <= 0)
+    throw std::runtime_error("Error: fft_input_time_window is less than 0");
+  if (fft_overlap_ <= 0 || fft_overlap_ >= 1)
+    throw std::runtime_error("Error: fft_overlap is out of (0, 1) range");
+}
+
 // calcutate complex parameters from other parameters
-void GeneratorConfiguration::processParameters() {
+void GeneratorConfiguration::processParameters()
+{
   fft_in_frame_count_ = out_sample_rate_ * fft_input_time_window_ / 1000;
   fft_out_frame_count_ = fft_in_frame_count_ / 2 + 1;
   fft_delta_frame_ = (1 - fft_overlap_) * fft_in_frame_count_;
   img_time_per_img_ = (1 - fft_overlap_) * fft_input_time_window_ * img_fft_per_img_;
 }
 
-
-std::ostream& operator<<(std::ostream& os, const GeneratorConfiguration& cfg) {
+std::ostream &operator<<(std::ostream &os, const GeneratorConfiguration &cfg)
+{
   return os << "Generation parameters:"
             << "\nout_sample_rate:         " << cfg.out_sample_rate_
             << "\nimg_width:               " << cfg.img_width_
