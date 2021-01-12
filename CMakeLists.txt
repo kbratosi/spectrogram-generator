@@ -47,6 +47,37 @@ target_link_libraries(
   ${Boost_PYTHON_LIBRARY}
 )
 
+#Add tests
+set (BUILD_TESTS) #set TRUE if you want to build tests
+
+if(BUILD_TESTS)
+     list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)
+     find_package(Boost COMPONENTS system filesystem unit_test_framework REQUIRED)
+     
+     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build)
+     
+     add_executable(basic_test ${CMAKE_HOME_DIRECTORY}/test/test.cpp ${TARGET_SRC})
+     target_link_libraries(basic_test 
+     avcodec
+     avutil
+     avformat
+     swresample
+     ${Python_LIBRARIES}
+     ${Boost_PYTHON_LIBRARY}
+     ${OpenMP_CXX_LIBRARIES}
+     fftw3_omp
+     ${FFTW_LIBRARIES}
+     ${OpenCV_LIBS} ${Boost_FILESYSTEM_LIBRARY}
+     ${Boost_SYSTEM_LIBRARY}
+     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+     )
+     
+     add_test(AutoTest basic_test)
+     enable_testing()
+     
+endif()
+
+
 # generating documentation
 
 set(BUILD_DOCS) #set TRUE if you want to build docs

@@ -1,23 +1,15 @@
 #include "ImageGenerator.hpp"
 
-ImageGenerator::ImageGenerator(const GeneratorConfiguration *cfg)
+ImageGenerator::ImageGenerator(const GeneratorConfiguration *cfg) : RAW_X(cfg->img_fft_per_img_), RAW_Y(cfg->fft_out_frame_count_), SAMPLE_RATE(cfg->out_sample_rate_ / 2), TIME_PER_IMG(cfg->img_time_per_img_), SCALE_TIME_INTERVAL(cfg->img_scale_time_interval_), scale_time_(0)
 {
-    y_ = cfg->fft_out_frame_count_;
-    x_ = cfg->img_fft_per_img_;
-
-    sample_rate_ = cfg->out_sample_rate_ / 2;
-    time_per_img_ = cfg->img_time_per_img_;
-    scale_time_interval_ = cfg->img_scale_time_interval_;
-    scale_time_ = 0;
+    //image created from original data from FFT
+    tempImage_ = new cv::Mat(RAW_Y, RAW_X, CV_16UC1, cv::Scalar(0));
 
     //output image with declared by user resolution
     image_ = new cv::Mat(cfg->img_height_, cfg->img_width_, CV_16UC1, cv::Scalar(0));
 
     //output image after adding scale lines
     outputImage_ = new cv::Mat();
-
-    //image to process based on original data from FFT
-    tempImage_ = new cv::Mat(y_, x_, CV_16UC1, cv::Scalar(0));
 
     if (image_->empty() || tempImage_->empty())
     {
@@ -35,16 +27,16 @@ ImageGenerator::~ImageGenerator()
 void ImageGenerator::generateSpectrograms(std::vector<float *> *transforms)
 {
     //create images from full windows
-    int numOfImages = transforms->size() / x_;
+    int numOfImages = transforms->size() / RAW_X;
     for (int k = 0; k < numOfImages; ++k)
     {
 #pragma omp parallel for
-        for (int i = 0; i < x_; ++i)
+        for (int i = 0; i < RAW_X; ++i)
         {
-            for (int j = 0; j < y_; ++j)
+            for (int j = 0; j < RAW_Y; ++j)
             {
                 cv::Point p(i, j);
-                cv::Scalar colorIn((transforms->at(x_ * k + i)[j] / 60 + 1) * 65536); //normalize output from 0 to 65536
+                cv::Scalar colorIn((transforms->at(RAW_X * k + i)[j] / 60 + 1) * UINT16_MAX); //normalize output from 0 to 65536
                 cv::line(*tempImage_, p, p, colorIn, 2);
             }
         }
@@ -55,12 +47,12 @@ void ImageGenerator::generateSpectrograms(std::vector<float *> *transforms)
     //create image from remaining samples
     *tempImage_ = cv::Scalar(0); //clear tempImage
 #pragma omp parallel for
-    for (uint i = 0; i < (transforms->size() - (x_ * numOfImages)); ++i)
+    for (uint i = 0; i < (transforms->size() - (RAW_X * numOfImages)); ++i)
     {
-        for (int j = 0; j < y_; ++j)
+        for (int j = 0; j < RAW_Y; ++j)
         {
             cv::Point p(i, j);
-            cv::Scalar colorIn((transforms->at(x_ * numOfImages + i)[j] / 60 + 1) * 65536); //normalize output from 0 to 65536
+            cv::Scalar colorIn((transforms->at(RAW_X * numOfImages + i)[j] / 60 + 1) * UINT16_MAX); //normalize output from 0 to 65536
             cv::line(*tempImage_, p, p, colorIn, 2);
         }
     }
@@ -80,7 +72,7 @@ void ImageGenerator::addScaleLines(int point0[])
 {
     //init width and height of borders + color
     cv::Scalar background(0);
-    cv::Scalar colorIn(65000);
+    cv::Scalar colorIn(UINT16_MAX);
 
     cv::copyMakeBorder(*image_, *outputImage_, point0[1], 0, 0, point0[0], cv::BORDER_CONSTANT, background);
 
@@ -98,30 +90,37 @@ void ImageGenerator::addScaleLines(int point0[])
 void ImageGenerator::drawScale(std::string value)
 {
     //set point of intersecting scale Lines (upper - right corner)
-    int point0[2] = {45, 18};
+    const int INTERSECT_X = 45;
+    const int INTERSECT_Y = 18;
+    //set frequency step on scale
+    const int FREQ_OFFSET = 1000;
+
+    int point0[2] = {INTERSECT_X, INTERSECT_Y};
     addScaleLines(point0);
 
-    cv::Scalar colorIn(65000);
+    cv::Scalar colorIn(UINT16_MAX);
 
-    // OY
-    //add axis describtion
+    // OY -------------------------------------------------------------------------
+    //add axis description
     cv::putText(*outputImage_, "Hz", cv::Point(outputImage_->cols - point0[0] + 6, point0[1] + 10), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1.5);
-    //set to draw scale every 1 kHz
-    int stepY = (1000 * outputImage_->rows) / sample_rate_;
+
+    //set to draw scale every FREQ_OFFSET
+    int stepY = (FREQ_OFFSET * outputImage_->rows) / SAMPLE_RATE;
 
 #pragma omp parallel for
     for (int i = point0[1] + stepY; i < outputImage_->rows; i += stepY)
     {
         cv::line(*outputImage_, cv::Point(outputImage_->cols - point0[0], i), cv::Point(outputImage_->cols - point0[0] + 4, i), colorIn, 1);
 
-        cv::putText(*outputImage_, std::to_string(((i - point0[1]) / stepY) * 1000), cv::Point(outputImage_->cols - point0[0] + 6, i), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
+        cv::putText(*outputImage_, std::to_string(((i - point0[1]) / stepY) * FREQ_OFFSET), cv::Point(outputImage_->cols - point0[0] + 6, i), cv::FONT_HERSHEY_DUPLEX, 0.3, colorIn, 1);
     }
 
-    //OX
-    //add axis describtion
+    //OX --------------------------------------------------------------------------
+    //add axis description
     cv::putText(*outputImage_, "ms", cv::Point(outputImage_->cols - point0[0] + 4, point0[1] - 6), cv::FONT_HERSHEY_DUPLEX, 0.4, colorIn, 1);
+
     //calculate step to draw scale with declared interval
-    int stepX = (scale_time_interval_ * outputImage_->cols) / time_per_img_;
+    int stepX = (SCALE_TIME_INTERVAL * outputImage_->cols) / TIME_PER_IMG;
     //calculate how many values program can draw
     int howManyValues = outputImage_->cols / stepX;
     //calculate how many FFT remain
@@ -133,6 +132,19 @@ void ImageGenerator::drawScale(std::string value)
 
         cv::line(*outputImage_, cv::Point(i, 12), cv::Point(i, 17), colorIn, 1);
 
-        cv::putText(*outputImage_, std::to_string(scale_time_interval_ * scale_time_), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.4, colorIn, 1);
+        cv::putText(*outputImage_, std::to_string(SCALE_TIME_INTERVAL * scale_time_), cv::Point(i, 10), cv::FONT_HERSHEY_DUPLEX, 0.4, colorIn, 1);
     }
+}
+
+cv::Mat *ImageGenerator::getImage()
+{
+    return image_;
+}
+cv::Mat *ImageGenerator::getOutputImage()
+{
+    return outputImage_;
+}
+cv::Mat *ImageGenerator::getTempImage()
+{
+    return tempImage_;
 }

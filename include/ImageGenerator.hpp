@@ -28,16 +28,21 @@ public:
     ///@param point0 array which stores intersection point of scale lines
     void addScaleLines(int point0[]);
 
+    cv::Mat *getImage();
+    cv::Mat *getOutputImage();
+    cv::Mat *getTempImage();
+
 private:
     cv::Mat *image_, *outputImage_, *tempImage_;
     /*
-    x_ - width of image create from FFT transformation
-    y_ - height --- || --- || --- || --- 
-    scaleTime - variable used to help displaying value on scale
-    timePerImg_ - calculated time in ms displayed on one image
+    RAW_X - width of image create from FFT transformation
+    RAW_Y - height --- || --- || --- || --- 
+    scale_time_ - variable used to help displaying value on scale
+    TIME_PER_IMG - calculated time in ms displayed on one image
     timeI
     */
-    int x_, y_, scale_time_, sample_rate_, time_per_img_, scale_time_interval_;
+    const int RAW_X, RAW_Y, SAMPLE_RATE, TIME_PER_IMG, SCALE_TIME_INTERVAL;
+    int scale_time_;
 };
 
 #endif
