@@ -19,7 +19,7 @@ test:
   script: echo "Running tests"
     - sh ./tests.sh
   only:
-      -master
+    - master
 
 
 
