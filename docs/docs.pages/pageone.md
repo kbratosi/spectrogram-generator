@@ -26,4 +26,18 @@ Application to plot spectrograms from audio files.
   
     `./run.sh <path to audio file>`
 
+* Run unit tests
+    `./build.sh -DBUILD_TESTS=TRUE`
+
+    `./build/unit_tests`
+
+* Build documentation
+    `./build.sh -DBUILD_DOCS=TRUE`
+
+    index.html is located in docs/html
+
+@section subsystem1section3 Documentation
+
+    [documentation](https://protegerpw.gitlab.io/spectograms/index.html)
+
 

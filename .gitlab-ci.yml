@@ -2,12 +2,11 @@ image: ubuntu:latest
 
 before_script:
   - apt-get update --yes > /dev/null
-  - DEBIAN_FRONTEND=noninteractive apt-get -y install cmake gcc g++ libavcodec-dev doxygen libboost-all-dev python3-opencv > /dev/null
+  - DEBIAN_FRONTEND=noninteractive apt-get -y install cmake gcc g++ libavcodec-dev doxygen libboost-all-dev python3-opencv pkg-config > /dev/null
 
 stages:
   - build
   - test
-  - documentation
 
 build:
   stage: build
@@ -23,14 +22,17 @@ test:
 
 
 
-documentation:
-  stage: documentation
+pages:
+  #script:
+  #  - sh ./build.sh -DBUILD_DOCS=TRUE 
+  #  - cd ./build
+  #  - make docs
+  #  - cd ..
+  #  - mv ./docs/html/ public
   script:
-    - sh ./build.sh -DBUILD_DOCS=TRUE 
-    - cd ./build
-    - make docs
-    - cd ..
-    - mv ./docs/html/ public
+  - apk update && apk add doxygen graphviz ttf-freefont
+  - doxygen docs/spectrogramDox
+  - mv docs/html/ public/
   artifacts:
     paths:
     - public

@@ -88,15 +88,15 @@ if(BUILD_DOCS)
     message(FATAL_ERROR "Doxygen is needed to build the documentation.")
   endif()
 
-  set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/docs/spectrogramDox.doxygen)
-  set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+    set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/docs/spectrogramDox)
+    set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
 
   configure_file(${doxyfile_in} ${doxyfile} @ONLY)
 
   message("Doxygen build started.")
 
-  add_custom_target(docs
-                    COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile_in}
+  add_custom_target(docs 
+                    COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
                     COMMENT "Generating API documentation with Doxygen"
                     VERBATIM)
