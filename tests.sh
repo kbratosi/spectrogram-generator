@@ -1,0 +1,1 @@
+sh ./build.sh -DBUILD_TESTS=TRUE > /dev/null
