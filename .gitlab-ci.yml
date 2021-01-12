@@ -32,7 +32,7 @@ pages:
   script:
   - apk update && apk add doxygen graphviz ttf-freefont
   - doxygen docs/spectrogramDox
-  - mv docs/html/ public/
+  - mv -f docs/html/ public/
   artifacts:
     paths:
     - public
