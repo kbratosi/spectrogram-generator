@@ -32,11 +32,10 @@ Application to plot spectrograms from audio files.
 
 * Build documentation
 
-    `./build.sh -DBUILD_DOCS=TRUE`
+    `./docs.sh`
 
     index.html is located in docs/html
 
 * Documentation
 
     [documentation](https://protegerpw.gitlab.io/spectograms/index.html)
-
