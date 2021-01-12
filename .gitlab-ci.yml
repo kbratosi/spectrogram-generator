@@ -30,7 +30,7 @@ pages:
   #  - cd ..
   #  - mv ./docs/html/ public
   script:
-  - apk update && apk add doxygen graphviz ttf-freefont
+  # - apk update && apk add doxygen graphviz ttf-freefont
   - doxygen docs/spectrogramDox
   - mv -f docs/html/ public/
   artifacts:
