@@ -6,6 +6,7 @@ before_script:
 
 stages:
   - build
+  - test
   - documentation
 
 build:
@@ -18,7 +19,7 @@ test:
   script: echo "Running tests"
     - sh ./tests.sh
   only:
-      -master
+    - master
 
 
 
