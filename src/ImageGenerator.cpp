@@ -32,10 +32,10 @@ ImageGenerator::~ImageGenerator()
     delete outputImage_;
 }
 
-void ImageGenerator::createImage(std::vector<float *> *data)
+void ImageGenerator::generateSpectrograms(std::vector<float *> *transforms)
 {
     //create images from full windows
-    int numOfImages = data->size() / x_;
+    int numOfImages = transforms->size() / x_;
     for (int k = 0; k < numOfImages; ++k)
     {
 #pragma omp parallel for
@@ -44,7 +44,7 @@ void ImageGenerator::createImage(std::vector<float *> *data)
             for (int j = 0; j < y_; ++j)
             {
                 cv::Point p(i, j);
-                cv::Scalar colorIn((data->at(x_ * k + i)[j] / 60 + 1) * 65536); //normalize output from 0 to 65536
+                cv::Scalar colorIn((transforms->at(x_ * k + i)[j] / 60 + 1) * 65536); //normalize output from 0 to 65536
                 cv::line(*tempImage_, p, p, colorIn, 2);
             }
         }
@@ -55,12 +55,12 @@ void ImageGenerator::createImage(std::vector<float *> *data)
     //create image from remaining samples
     *tempImage_ = cv::Scalar(0); //clear tempImage
 #pragma omp parallel for
-    for (uint i = 0; i < (data->size() - (x_ * numOfImages)); ++i)
+    for (uint i = 0; i < (transforms->size() - (x_ * numOfImages)); ++i)
     {
         for (int j = 0; j < y_; ++j)
         {
             cv::Point p(i, j);
-            cv::Scalar colorIn((data->at(x_ * numOfImages + i)[j] / 60 + 1) * 65536); //normalize output from 0 to 65536
+            cv::Scalar colorIn((transforms->at(x_ * numOfImages + i)[j] / 60 + 1) * 65536); //normalize output from 0 to 65536
             cv::line(*tempImage_, p, p, colorIn, 2);
         }
     }

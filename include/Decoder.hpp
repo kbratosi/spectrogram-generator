@@ -13,7 +13,7 @@ extern "C"
 
 #include "GeneratorConfiguration.hpp"
 
-typedef float sample_fmt; // sample format - bit depth & int/float coding
+typedef float SampleFormat; // sample format - bit depth & int/float coding
 
 /// Class used for opening an encoded audio file, retrieving information about its contents,
 /// * decoding encoded audio packets to raw data and saving it to a specified buffer.
@@ -39,11 +39,11 @@ class Decoder
   void initPacket();
   void initFrame();
   //
-  void allocateMemory(sample_fmt **data);
-  void reallocateMemory(sample_fmt **data, int new_sample_capacity);
-  void addOverlapPrefix(sample_fmt **data, int *data_size);
-  void readFile(sample_fmt **data, int *data_size);
-  void addOverlapSuffix(sample_fmt **data, int *data_size);
+  void allocateMemory(SampleFormat **data);
+  void reallocateMemory(SampleFormat **data, int new_sample_capacity);
+  void addOverlapPrefix(SampleFormat **data, int *data_size);
+  void readFile(SampleFormat **data, int *data_size);
+  void addOverlapSuffix(SampleFormat **data, int *data_size);
   //
   const char *avMakeError(int errnum);
 
@@ -60,10 +60,9 @@ public:
   void setup();
 
   /// retrieve audio data from file, prepare data stream for fft transforms
-  ///
   ///@param data_size pointer to field number of samples
   ///@param data pointer to array storing raw audio signal
-  void decode(sample_fmt **data, int *data_size);
+  void decode(SampleFormat **data, int *data_size);
 };
 
 #endif
