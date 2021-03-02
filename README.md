@@ -18,7 +18,7 @@ Application to plot set of spectrograms from audio files
 
 ## Download repository
 
-    git clone https://gitlab.com/ProtegerPW/spectograms.git
+    git clone https://gitlab.com/ProtegerPW/spectrograms.git
 
 ## Build application
 
@@ -43,4 +43,4 @@ file index.html is located in docs/html
 
 ## Documentation
 
-[documentation](https://protegerpw.gitlab.io/spectograms/index.html)
+[documentation](https://protegerpw.gitlab.io/spectrograms/index.html)
