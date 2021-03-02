@@ -1,41 +1,46 @@
-# Creating spectrograms from audio file
+# Spectrogram generator
 
-Application to plot spectrograms from audio files.
+Application to plot set of spectrograms from audio files
 
 ![](/docs/Spectrogram0.png)
 
-* Requirements
+## Features
+* spectrograms are saved in .png format ()
+* program supports many popular audio formats
 
-    `sudo apt install cmake pkg-config ffmpeg libopencv-dev libfftw3-dev libomp-dev python`
+## Requirements
 
-* Optional (for tests and creating documentation)
+    sudo apt install cmake pkg-config ffmpeg libopencv-dev libfftw3-dev libomp-dev python
 
-    `sudo apt install libboost-all-dev doxygen`
+### Optional (for tests and creating documentation)
 
-* Download repository
+    sudo apt install libboost-all-dev doxygen
 
-    `git clone https://gitlab.com/ProtegerPW/spectograms.git`
+## Download repository
 
-* To build application
+    git clone https://gitlab.com/ProtegerPW/spectograms.git
 
-    `./build.sh`
+## Build application
+
+    cd spectrograms
+    ./build.sh
   
-* Run application
+## Run application
   
-    `./run.sh <path to audio file>`
+    ./run.sh <path to_audio_file>
 
-* Run unit tests
+## Run unit tests
 
-    `./build.sh -DBUILD_TESTS=TRUE`
+    ./build.sh -DBUILD_TESTS=TRUE
 
-    `./build/unit_tests`
+    ./build/unit_tests
 
-* Build documentation
+## Build documentation
 
-    `./docs.sh`
+    ./docs.sh
 
-    index.html is located in docs/html
+file index.html is located in docs/html
 
-* Documentation
+## Documentation
 
     [documentation](https://protegerpw.gitlab.io/spectograms/index.html)
