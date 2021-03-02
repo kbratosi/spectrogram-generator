@@ -43,4 +43,4 @@ file index.html is located in docs/html
 
 ## Documentation
 
-    [documentation](https://protegerpw.gitlab.io/spectograms/index.html)
+[documentation](https://protegerpw.gitlab.io/spectograms/index.html)
