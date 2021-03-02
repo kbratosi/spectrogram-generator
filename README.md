@@ -5,8 +5,10 @@ Application to plot set of spectrograms from audio files
 ![](/docs/Spectrogram0.png)
 
 ## Features
-* spectrograms are saved in .png format ()
+* spectrograms are saved in .png format (in output folder)
 * program supports many popular audio formats
+* user can adjust attributes of image (height, width, overlapping, FFT on one image)
+
 
 ## Requirements
 
