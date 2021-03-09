@@ -1,22 +1,27 @@
 # Spectrogram generator
 
-Application to plot set of spectrograms from audio files
-
-![](/docs/Spectrogram0.png)
+Spectrogram generator is a CLI application decoding, computing and plotting a set of spectrograms from an audio file. Decoding is accomplished using FFMpeg, computation of Fast Fourier Transform using FFTW and plotting of spectrogram bitmaps using OpenCV.
 
 ## Features
-* spectrograms are saved in .png format (in output folder)
-* program supports many popular audio formats
-* user can adjust attributes of image (height, width, overlapping, FFT on one image)
+* program supports many popular audio formats (courtesy of FFMpeg)
+* run-time parameters parsing from a Python script (config.py)
+* user can adjust following parameters:
+    - FFT window size, overlap
+    - number of FFTs per image
+    - image: height, width \[px\]
+    - horizontal scale division unit \[ms\]
+* spectrograms are saved in .png format (in output/)
 
+## Output example 
+![](/docs/Spectrogram0.png)
 
 ## Requirements
 
-    sudo apt install cmake pkg-config ffmpeg libopencv-dev libfftw3-dev libomp-dev python
+    apt install cmake pkg-config ffmpeg libopencv-dev libfftw3-dev libomp-dev python (requires root)
 
 ### Optional (for tests and creating documentation)
 
-    sudo apt install libboost-all-dev doxygen
+    apt install libboost-all-dev doxygen (requires root)
 
 ## Download repository
 
